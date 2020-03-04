@@ -35,19 +35,19 @@ This plugin is free but if you use it in a commercial project please consider to
 
 Get all the holidays for the United States in 2020 - be warned, this is a huge array containing translations. If you literally just want the dates, keep reading.
 
-```
+```php
 $site->holidays('USA', 2020);
 ```
 
 If you want it to keep rolling with the current year, use date()...
 
-```
+```php
 $site->holidays('Netherlands', date("Y"));
 ```
 
 ## Just want the dates?
 
-```
+```php
 $holidays = $site->holidays('France', 2020);
 
 $days = [];
@@ -100,7 +100,7 @@ dump($filteredEvents);
 
 If you'd like to display holidays in the panel, you can use the provided `holidays` collection. It features title, date and type of all holidays. This requires [Roman Steiner's Pages Display Section](https://github.com/rasteiner/k3-pagesdisplay-section) plugin.
 
-```
+```yml
 sections:
   holidays:
     type: pagesdisplay
