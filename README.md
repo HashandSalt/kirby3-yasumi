@@ -62,7 +62,7 @@ dump($days);
 
 The example below uses Yasumi in combination with my [Recurr](https://github.com/HashandSalt/kirby-recurr) plugin to filter out repeating event dates that fall on public holidays. Thanks to [Bruno Meilick](https://github.com/bnomei) for the filter array code.
 
-```
+```php
 <?php
 
 // Get set of dates from Recurr
