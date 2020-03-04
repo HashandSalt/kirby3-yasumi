@@ -1,0 +1,33 @@
+<?php declare(strict_types=1);
+/**
+ * This file is part of the Yasumi package.
+ *
+ * Copyright (c) 2015 - 2019 AzuyaLabs
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ */
+
+// Translations for All Saints' Day
+return [
+    'de' => 'Allerheiligen',
+    'el' => 'Άγιοι Πάντες',
+    'en' => 'All Saints\' Day',
+    'es' => 'Día de todos los Santos',
+    'fi' => 'Pyhäinpäivä',
+    'fr_BE' => 'La Toussaint',
+    'fr' => 'Toussaint',
+    'hr' => 'Dan svih svetih',
+    'hu' => 'Mindenszentek',
+    'it' => 'Festa di Tutti i Santi',
+    'it_CH' => 'Ognissanti',
+    'lt' => 'Visų šventųjų diena (Vėlinės)',
+    'nl' => 'Allerheiligen',
+    'pl' => 'Uroczystość Wszystkich Świętych',
+    'pt' => 'Dia de todos os Santos',
+    'ro' => 'Ziua tuturor sfinților',
+    'sk' => 'Sviatok Všetkých svätých',
+    'sv' => 'alla helgons dag',
+];
