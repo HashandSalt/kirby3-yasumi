@@ -2,7 +2,7 @@
 
 @include_once __DIR__ . '/vendor/autoload.php';
 
-Kirby::plugin('hashsandsalt/kirby3-yasumi', [
+Kirby::plugin('hashsandsalt/yasumi', [
 
     'siteMethods' => [
         'holidays' => function ($country, $year, $locale = 'en_US') {
@@ -13,9 +13,9 @@ Kirby::plugin('hashsandsalt/kirby3-yasumi', [
 
     'collections' => [
         'holidays' => function ($site) {
-            $country = option('hashandsalt.kirby3-yasumi.country', 'Germany/LowerSaxony');
-            $year = option('hashandsalt.kirby3-yasumi.year', date('Y'));
-            $locale = option('hashandsalt.kirby3-yasumi.locale', 'de_DE');
+            $country = option('hashandsalt.yasumi.country', 'UnitedKingdom');
+            $year = option('hashandsalt.yasumi.year', date('Y'));
+            $locale = option('hashandsalt.yasumi.locale', 'en_GB');
 
             foreach ($site->holidays($country, $year, $locale) as $holiday) {
                 $date = new DateTime($holiday);
