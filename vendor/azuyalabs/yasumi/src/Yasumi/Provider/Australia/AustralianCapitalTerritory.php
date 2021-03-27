@@ -2,7 +2,7 @@
 /**
  * This file is part of the Yasumi package.
  *
- * Copyright (c) 2015 - 2019 AzuyaLabs
+ * Copyright (c) 2015 - 2020 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,16 +14,16 @@ namespace Yasumi\Provider\Australia;
 
 use DateInterval;
 use DateTime;
-use DateTimeZone;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Australia;
+use Yasumi\Provider\DateTimeZoneFactory;
 
 /**
  * Provider for all holidays in Australian Capital Territory (Australia).
  *
  */
-class ACT extends Australia
+class AustralianCapitalTerritory extends Australia
 {
     /**
      * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
@@ -73,8 +73,12 @@ class ACT extends Australia
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function easterSunday($year, $timezone, $locale, $type = null): Holiday
-    {
+    private function easterSunday(
+        int $year,
+        string $timezone,
+        string $locale,
+        ?string $type = null
+    ): Holiday {
         return new Holiday(
             'easter',
             ['en' => 'Easter Sunday'],
@@ -105,8 +109,12 @@ class ACT extends Australia
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function easterSaturday($year, $timezone, $locale, $type = null): Holiday
-    {
+    private function easterSaturday(
+        int $year,
+        string $timezone,
+        string $locale,
+        ?string $type = null
+    ): Holiday {
         return new Holiday(
             'easterSaturday',
             ['en' => 'Easter Saturday'],
@@ -133,13 +141,13 @@ class ACT extends Australia
      */
     private function calculateQueensBirthday(): void
     {
-        $this->calculateHoliday(
+        $this->addHoliday(new Holiday(
             'queensBirthday',
-            ['en' => "Queen's Birthday"],
-            new DateTime('second monday of june ' . $this->year, new DateTimeZone($this->timezone)),
-            false,
-            false
-        );
+            [],
+            new DateTime('second monday of june ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            $this->locale,
+            Holiday::TYPE_OFFICIAL
+        ));
     }
 
     /**
@@ -149,7 +157,7 @@ class ACT extends Australia
      */
     private function calculateLabourDay(): void
     {
-        $date = new DateTime("first monday of october $this->year", new DateTimeZone($this->timezone));
+        $date = new DateTime("first monday of october $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
         $this->addHoliday(new Holiday('labourDay', [], $date, $this->locale));
     }
@@ -161,12 +169,16 @@ class ACT extends Australia
      */
     private function calculateCanberraDay(): void
     {
-        if ($this->year < 2007) {
-            $date = new DateTime("third monday of march $this->year", new DateTimeZone($this->timezone));
-        } else {
-            $date = new DateTime("second monday of march $this->year", new DateTimeZone($this->timezone));
-        }
-        $this->addHoliday(new Holiday('canberraDay', ['en' => 'Canberra Day'], $date, $this->locale));
+        $datePattern = $this->year < 2007 ? "third monday of march $this->year" : "second monday of march $this->year";
+
+        $this->addHoliday(
+            new Holiday(
+                'canberraDay',
+                ['en' => 'Canberra Day'],
+                new DateTime($datePattern, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                $this->locale
+            )
+        );
     }
 
     /**
@@ -180,8 +192,8 @@ class ACT extends Australia
             return;
         }
 
-        $date = new DateTime($this->year . '-05-27', new DateTimeZone($this->timezone));
-        $day = (int)$date->format('w');
+        $date = new DateTime($this->year . '-05-27', DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $day = (int) $date->format('w');
         if (1 !== $day) {
             $date = $date->add(0 === $day ? new DateInterval('P1D') : new DateInterval('P' . (8 - $day) . 'D'));
         }

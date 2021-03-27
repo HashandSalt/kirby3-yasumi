@@ -23,7 +23,7 @@ Kirby::plugin('hashsandsalt/yasumi', [
                 $pages[] = [
                     'slug' => $holiday->shortName,
                     'num' => $date->format('Ymd'),
-                    'model' => 'holiday',
+                    'template' => 'yasumi',
                     'content' => [
                         'title' => $holiday->getName(),
                         'date' => $date->format('Y-m-d'),

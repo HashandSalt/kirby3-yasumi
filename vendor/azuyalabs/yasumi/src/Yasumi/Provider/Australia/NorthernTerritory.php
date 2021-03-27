@@ -2,7 +2,7 @@
 /**
  * This file is part of the Yasumi package.
  *
- * Copyright (c) 2015 - 2019 AzuyaLabs
+ * Copyright (c) 2015 - 2020 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,27 +14,27 @@ namespace Yasumi\Provider\Australia;
 
 use DateInterval;
 use DateTime;
-use DateTimeZone;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Australia;
+use Yasumi\Provider\DateTimeZoneFactory;
 
 /**
- * Provider for all holidays in New South Wales (Australia).
+ * Provider for all holidays in Northern Territory (Australia).
  *
  */
-class NSW extends Australia
+class NorthernTerritory extends Australia
 {
     /**
      * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
-    public const ID = 'AU-NSW';
+    public const ID = 'AU-NT';
 
-    public $timezone = 'Australia/NSW';
+    public $timezone = 'Australia/North';
 
     /**
-     * Initialize holidays for New South Wales (Australia).
+     * Initialize holidays for Northern Territory (Australia).
      *
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
@@ -44,11 +44,10 @@ class NSW extends Australia
     {
         parent::initialize();
 
-        $this->addHoliday(new Holiday('easter', [], $this->calculateEaster($this->year, $this->timezone), $this->locale));
         $this->addHoliday($this->easterSaturday($this->year, $this->timezone, $this->locale));
         $this->calculateQueensBirthday();
-        $this->calculateLabourDay();
-        $this->calculateBankHoliday();
+        $this->calculateMayDay();
+        $this->calculatePicnicDay();
     }
 
     /**
@@ -72,8 +71,12 @@ class NSW extends Australia
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function easterSaturday($year, $timezone, $locale, $type = null): Holiday
-    {
+    private function easterSaturday(
+        int $year,
+        string $timezone,
+        string $locale,
+        ?string $type = null
+    ): Holiday {
         return new Holiday(
             'easterSaturday',
             ['en' => 'Easter Saturday'],
@@ -100,42 +103,43 @@ class NSW extends Australia
      */
     private function calculateQueensBirthday(): void
     {
-        $this->calculateHoliday(
+        $this->addHoliday(new Holiday(
             'queensBirthday',
-            ['en' => "Queen's Birthday"],
-            new DateTime('second monday of june ' . $this->year, new DateTimeZone($this->timezone)),
-            false,
-            false
-        );
+            [],
+            new DateTime('second monday of june ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            $this->locale,
+            Holiday::TYPE_OFFICIAL
+        ));
     }
 
     /**
-     * Labour Day
+     * May Day
      *
      * @throws \Exception
      */
-    private function calculateLabourDay(): void
+    private function calculateMayDay(): void
     {
-        $date = new DateTime("first monday of october $this->year", new DateTimeZone($this->timezone));
+        $date = new DateTime("first monday of may $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
-        $this->addHoliday(new Holiday('labourDay', [], $date, $this->locale));
+        $this->addHoliday(new Holiday('mayDay', ['en' => 'May Day'], $date, $this->locale));
     }
 
     /**
-     * Bank Holiday.
+     * Picnic Day
+     *
+     * @link https://en.wikipedia.org/wiki/Picnic_Day_(Australian_holiday)
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function calculateBankHoliday(): void
+    private function calculatePicnicDay(): void
     {
-        $this->calculateHoliday(
-            'bankHoliday',
-            ['en' => 'Bank Holiday'],
-            new DateTime('first monday of august ' . $this->year, new DateTimeZone($this->timezone)),
-            false,
-            false,
-            Holiday::TYPE_BANK
-        );
+        $this->addHoliday(new Holiday(
+            'picnicDay',
+            ['en' => 'Picnic Day'],
+            new DateTime('first monday of august ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            $this->locale,
+            Holiday::TYPE_OFFICIAL
+        ));
     }
 }
