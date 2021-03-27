@@ -1,6 +1,6 @@
 # Kirby 3 Yasumi Plugin
 
-Get a list of official public holidays and the dates they fall on for any country and year. A wrapper around the [Yasumi](https://azuyalabs.github.io/yasumi/) library, exposing it as a Kirby site method. Anything Yasumi can do, you should be able to chain in to the site method.
+Get a list of official public holidays and the dates they fall on for any country and year. A wrapper around the [Yasumi](https://github.com/azuyalabs/yasumi) library, exposing it as a Kirby site method. Anything Yasumi can do, you should be able to chain in to the site method.
 
 ## Installation
 
