@@ -5,6 +5,7 @@ namespace Hashsandsalt\Yasumi;
 use ArrayIterator;
 use DateTime;
 use IteratorAggregate;
+use Kirby\Cms\Structure;
 use Traversable;
 use Yasumi\Filters\OfficialHolidaysFilter;
 use Yasumi\Filters\ObservedHolidaysFilter;
@@ -65,8 +66,10 @@ class Holidays implements IteratorAggregate
         }
 
         // Convert Yasumi data to Holiday object
-        foreach ($provider as $holiday) {
-            $this->data[] = new Holiday($holiday);
+        foreach ($provider as $date) {
+            $holiday = new Holiday($date);
+
+            $this->data[$holiday->id()] = $holiday;
         }
     }
 
@@ -124,10 +127,65 @@ class Holidays implements IteratorAggregate
     }
 
     /**
+     * Finds a holiday by id.
+     *
+     * @param $id The holiday id.
+     */
+    public function find(string $id): Holiday|null
+    {
+        $this->getData();
+
+        return $this->data[$id] ?? null;
+    }
+
+    /**
+     * Returns a list of all holiday names.
+     */
+    public function names(): array
+    {
+        return $this->provider->getHolidayNames();
+    }
+
+    /**
+     * Returns a list of all holiday dates as values and their names as keys.
+     */
+    public function dates(): array
+    {
+        return $this->provider->getHolidayDates();
+    }
+
+    /**
+     * Converts the Holiday collection to array.
+     *
+     * @param $deep Whether to convert each Holiday object to array as well, defaults to false.
+     */
+    public function toArray($deep = false): array
+    {
+        $holidays = iterator_to_array($this->getIterator());
+
+        if ($deep === true) {
+            $holidays = array_map(
+                fn($holiday) => $holiday->toArray(),
+                $holidays
+            );
+        }
+
+        return $holidays;
+    }
+
+    /**
+     * Converts the Holiday collection to a Kirby Structure object.
+     */
+    public function toStructure()
+    {
+        return new Structure($this->toArray());
+    }
+
+    /**
      * Returns debug information for the collection.
      */
     public function __debugInfo(): array
     {
-        return iterator_to_array($this->getIterator());
+        return $this->toArray();
     }
 }

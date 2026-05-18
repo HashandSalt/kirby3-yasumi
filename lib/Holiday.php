@@ -26,6 +26,9 @@ class Holiday
         ]);
     }
 
+    /**
+     * Returns the title, translated if the site is multilingual.
+     */
     public function title()
     {
         $kirby = kirby();
@@ -37,45 +40,74 @@ class Holiday
         return $this->data->getName();
     }
 
+    /**
+     * Returns the slug.
+     */
     public function slug()
     {
-        if ($this->slug !== null) {
-            return $this->slug;
+        if ($this->slug === null) {
+            $this->slug = Str::kebab($this->data->getKey());
         }
 
-        return $this->slug = Str::kebab($this->data->getKey());
+        return $this->slug;
     }
 
+    /**
+     * Returns the id.
+     */
     public function id()
     {
-        if ($this->id !== null) {
-            return $this->id;
+        if ($this->id === null) {
+            $this->id = 'holidays/' . $this->slug();
         }
 
-        return $this->id = 'holidays/' . $this->slug();
+        return $this->id;
     }
 
+    /**
+     * Returns the content object.
+     */
     public function content()
     {
         return $this->content;
     }
 
+    /**
+     * Get content fields via magic methods.
+     *
+     * @param $name The field name.
+     * @param $arguments The field arguments.
+     */
     public function __call($name, $arguments)
     {
         return $this->content->{$name}($arguments);
     }
 
+    /**
+     * Converts the Holiday object to string by returning the title.
+     */
     public function __toString()
     {
         return $this->content->title()->value();
     }
 
-    public function __debugInfo(): array
+    /**
+     * Converts the Holiday object to array.
+     */
+    public function toArray(): array
     {
         return [
             'id' => $this->id(),
             'slug' => $this->slug(),
             'content' => $this->content()->toArray()
         ];
+    }
+
+    /**
+     * Returns debug information for the Holiday object.
+     */
+    public function __debugInfo(): array
+    {
+        return $this->toArray();
     }
 }
