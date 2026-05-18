@@ -28,9 +28,9 @@ composer require hashandsalt/kirby-yasumi
 The plugin provides a Holidays collection with an interface similar to Kirby's Pages object. Holidays are filtered by country and year and can be translated to a given locale. If they are not specified manually, these settings are taken from the current Kirby context automatically, using the current system language and the current year.
 
 > [!NOTE]
-> Previously, this plugin was providing the Yasumi object directly. As of version 2.0 it returns a dedicated Holidays collection. If you need access the Yasumi object, use `$site->yasumi()`.
+> Previously, this plugin was providing the Yasumi object directly. As of version 2.0 it returns a dedicated Holidays collection. If you need to access the Yasumi object, use `$site->yasumi()`.
 
-In the frontend are two ways to access the collection:
+In the frontend, there are two ways to access the collection:
 
 1. Using the site method: `$site->holidays('Germany', 2020, 'de_DE')`.
 2. Using the global collection: `$kirby->collection('holidays')`.
