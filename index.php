@@ -60,7 +60,7 @@ Kirby::plugin('hashsandsalt/yasumi', [
          */
         'holidays' => function ($site): Holidays {
             $country = option('hashandsalt.yasumi.country');
-            $year = intval(option('hashandsalt.yasumi.year'));
+            $year = option('hashandsalt.yasumi.year');
             $locale = option('hashandsalt.yasumi.locale');
             $yasumi = $site->yasumi($country, $year, $locale);
 
