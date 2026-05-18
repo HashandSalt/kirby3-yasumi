@@ -20,13 +20,16 @@ Kirby::plugin('hashsandsalt/yasumi', [
             // Determine current locale.
             // This equals the current language displayed by Kirby.
             if ($locale === null) {
-                $locale = Locale::getDefault();
-                $locale = Str::before($locale, '.');
-                $locale = Str::replace($locale, '-', '_');
+                $defaultLocale = Locale::getDefault();
+                $primary = Locale::getPrimaryLanguage($defaultLocale);
+                $region = Locale::getRegion($defaultLocale);
+                $locale = $primary . '_' . $region;
             }
 
             // Determine country context
-            $country = $country ?? Locale::getDisplayRegion($locale, 'en');
+            $country =
+                $country ??
+                Str::replace(Locale::getDisplayRegion($locale, 'en'), ' ', '');
 
             // Determine year
             $year = $year ?? date('Y');
