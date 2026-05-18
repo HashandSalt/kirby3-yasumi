@@ -2,11 +2,13 @@
 
 namespace Hashsandsalt\Yasumi;
 
-use Exception;
 use Kirby\Content\Content;
 use Kirby\Toolkit\Str;
 use Yasumi\Holiday as YasumiHoliday;
 
+/**
+ * Holiday object
+ */
 class Holiday
 {
     private YasumiHoliday $data;
@@ -29,21 +31,7 @@ class Holiday
         $kirby = kirby();
 
         if ($kirby->multilang()) {
-            $translations = [];
-
-            foreach ($kirby->languages() as $language) {
-                try {
-                    $translation = $this->data->getName(
-                        $language->locale(LC_ALL)
-                    );
-                } catch (Exception) {
-                    $translation = $this->data->getName();
-                }
-
-                $translations[$language->code()] = $translation;
-            }
-
-            return $translations;
+            return $this->data->getName([$kirby->language(), 'en_US']);
         }
 
         return $this->data->getName();
