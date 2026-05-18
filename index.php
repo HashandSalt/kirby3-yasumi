@@ -66,5 +66,49 @@ Kirby::plugin('hashsandsalt/yasumi', [
 
             return new Holidays($yasumi);
         }
+    ],
+    'sections' => [
+        /**
+         * Holiday panel section.
+         */
+        'holidays' => [
+            'props' => [
+                'label' => function (string $label = 'Holidays') {
+                    return $label;
+                },
+                'country' => function (?string $country = null) {
+                    return $country;
+                },
+                'year' => function (?int $year = null) {
+                    return $year;
+                }
+            ],
+            'computed' => [
+                'holidays' => function () {
+                    // Get Yasumi holiday data
+                    $yasumi = site()->yasumi($this->country(), $this->year());
+
+                    // Create Holidays collection
+                    $holidays = new Holidays($yasumi);
+
+                    // Create collection items
+                    $items = [];
+                    foreach ($holidays as $holiday) {
+                        $items[] = [
+                            'text' => $holiday->title(),
+                            'info' => IntlDateFormatter::formatObject(
+                                new DateTime($holiday->date()->value()),
+                                [
+                                    IntlDateFormatter::MEDIUM,
+                                    IntlDateFormatter::NONE
+                                ]
+                            )
+                        ];
+                    }
+
+                    return $items;
+                }
+            ]
+        ]
     ]
 ]);
