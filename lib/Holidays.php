@@ -121,9 +121,62 @@ class Holidays implements IteratorAggregate
      */
     public function filterByType(string $type): self
     {
+        // Reset data
+        $this->data = null;
+
+        // Set type filter
         $this->type = $type;
 
         return $this;
+    }
+
+    /**
+     * Filters the collection by start and end date.
+     *
+     * @param $start The start date.
+     * @param $end The end date.
+     * @param $equals Whether to include start and end dates, defaults to true.
+     */
+    public function filterByRange(
+        string|DateTimeInterface $start,
+        string|DateTimeInterface $end,
+        bool $equals = true
+    ): self {
+        // Reset data
+        $this->data = null;
+
+        // Set date range filter
+        $this->start = $this->ensureDateTime($start);
+        $this->end = $this->ensureDateTime($end);
+        $this->equals = $equals;
+
+        return $this;
+    }
+
+    /**
+     * Filters the collection by date.
+     *
+     * @param $date The holiday date to filter the collection with.
+     */
+    public function filterByDate(string|DateTimeInterface $date): self
+    {
+        // Reset data
+        $this->data = null;
+
+        // Set date filter
+        $this->date = $this->ensureDateTime($date);
+
+        return $this;
+    }
+
+    /**
+     * Ensures the date variable is a DateTime object.
+     *
+     * @param $date Either a date string or DateTime interface.
+     */
+    private function ensureDateTime(string|DateTimeInterface $date): DateTime
+    {
+        return is_string($date) ? new DateTime($date) : $date;
     }
 
     /**
