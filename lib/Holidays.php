@@ -155,6 +155,24 @@ class Holidays implements IteratorAggregate
     }
 
     /**
+     * Checks if the collection is empty.
+     */
+    public function isEmpty(): bool
+    {
+        $this->getData();
+
+        return $this->data === [];
+    }
+
+    /**
+     * Checks if the collection is not empty.
+     */
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
+    }
+
+    /**
      * Converts the Holiday collection to array.
      *
      * @param $deep Whether to convert each Holiday object to array as well, defaults to false.
