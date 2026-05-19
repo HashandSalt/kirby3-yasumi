@@ -3,6 +3,7 @@
 namespace Hashsandsalt\Yasumi;
 
 use Kirby\Content\Content;
+use Kirby\Content\Field;
 use Kirby\Toolkit\Str;
 use Yasumi\Holiday as YasumiHoliday;
 
@@ -34,10 +35,12 @@ class Holiday
         $kirby = kirby();
 
         if ($kirby->multilang()) {
-            return $this->data->getName([$kirby->language(), 'en_US']);
+            $value = $this->data->getName([$kirby->language(), 'en_US']);
+        } else {
+            $value = $this->data->getName();
         }
 
-        return $this->data->getName();
+        return new Field(parent: null, key: 'title', value: $value);
     }
 
     /**
