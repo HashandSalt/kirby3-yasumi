@@ -31,6 +31,12 @@ Kirby::plugin('hashsandsalt/yasumi', [
                 $country ??
                 Str::replace(Locale::getDisplayRegion($locale, 'en'), ' ', '');
 
+            // Convert to country abbreviations used by Yasumi
+            $country = match ($country) {
+                'UnitedStates', '' => 'USA',
+                default => $country
+            };
+
             // Determine year
             $year = $year ?? date('Y');
 
