@@ -238,7 +238,7 @@ fields:
       value: '{{ item.slug }}'
 ```
 
-## Single language istes
+## Single language installs
 
 If you site only offers a single language, you might have to set your current language manually. You can do so by adding `Locale::setDefault()` on top of your configuration file:
 
