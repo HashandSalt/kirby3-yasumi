@@ -76,6 +76,28 @@ class Holiday
     }
 
     /**
+     * Checks the holiday against a given type, defaults to `official`.
+     *
+     * @param $type The holiday type to compare with.
+     */
+    public function isHoliday(HolidayTypes $type = HolidayTypes::Official): bool
+    {
+        return HolidayTypes::tryFrom($this->type()->value()) === $type;
+    }
+
+    /**
+     * Converts the Holiday object to array.
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id(),
+            'slug' => $this->slug(),
+            'content' => $this->content()->toArray()
+        ];
+    }
+
+    /**
      * Get content fields via magic methods.
      *
      * @param $name The field name.
@@ -92,18 +114,6 @@ class Holiday
     public function __toString()
     {
         return $this->content->title()->value();
-    }
-
-    /**
-     * Converts the Holiday object to array.
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id(),
-            'slug' => $this->slug(),
-            'content' => $this->content()->toArray()
-        ];
     }
 
     /**
