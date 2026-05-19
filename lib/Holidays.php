@@ -180,8 +180,9 @@ class Holidays implements IteratorAggregate
      *
      * @param $date Either a date string or DateTime interface.
      */
-    private function ensureDateTime(string|DateTimeInterface $date): DateTime
-    {
+    private function ensureDateTime(
+        string|DateTimeInterface $date
+    ): DateTimeInterface {
         return is_string($date) ? new DateTime($date) : $date;
     }
 
