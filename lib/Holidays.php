@@ -4,12 +4,14 @@ namespace Hashsandsalt\Yasumi;
 
 use ArrayIterator;
 use DateTime;
+use DateTimeInterface;
 use IteratorAggregate;
 use Kirby\Cms\Structure;
 use Traversable;
 use Yasumi\Filters\OfficialHolidaysFilter;
 use Yasumi\Filters\ObservedHolidaysFilter;
 use Yasumi\Filters\BankHolidaysFilter;
+use Yasumi\Filters\OnFilter;
 use Yasumi\Filters\SeasonalHolidaysFilter;
 use Yasumi\Filters\OtherHolidaysFilter;
 use Yasumi\ProviderInterface;
@@ -20,11 +22,12 @@ use Yasumi\ProviderInterface;
 class Holidays implements IteratorAggregate
 {
     private ProviderInterface $provider;
-    private array $data = [];
+    private ?array $data = null;
     private ?string $type = null;
-    private ?DateTime $start = null;
-    private ?DateTime $end = null;
+    private ?DateTimeInterface $start = null;
+    private ?DateTimeInterface $end = null;
     private bool $equals = true;
+    private ?DateTimeInterface $date = null;
 
     public function __construct(ProviderInterface $provider)
     {
@@ -36,6 +39,12 @@ class Holidays implements IteratorAggregate
      */
     private function getData(): void
     {
+        if ($this->data !== null) {
+            return;
+        }
+
+        $this->data = [];
+
         $provider = $this->provider;
 
         // If set, filter by start and end date
@@ -47,13 +56,15 @@ class Holidays implements IteratorAggregate
             );
         }
 
+        // If set, filter by date
+        if ($this->date !== null) {
+            $iterator = $this->providerToIterator($provider);
+            $provider = new OnFilter($iterator, $this->date);
+        }
+
         // If set, filter by type
         if ($this->type !== null) {
-            // If the collection is filtered by start and end dates already,
-            // the provider is an iterator already
-            $iterator = method_exists($provider, 'getIterator')
-                ? $provider->getIterator()
-                : $provider;
+            $iterator = $this->providerToIterator($provider);
 
             $provider = match ($this->type) {
                 'official' => new OfficialHolidaysFilter($iterator),
@@ -74,32 +85,27 @@ class Holidays implements IteratorAggregate
     }
 
     /**
-     * Returns the holidy iterator.
+     * Resolves the country provider to its iterator if it isn't a iterator already.
+     *
+     * @param $provider The country provider.
+     */
+    private function providerToIterator($provider)
+    {
+        // If the collection is filtered by start and end dates already,
+        // the provider is an iterator already
+        return method_exists($provider, 'getIterator')
+            ? $provider->getIterator()
+            : $provider;
+    }
+
+    /**
+     * Returns the holiday iterator.
      */
     public function getIterator(): Traversable
     {
         $this->getData();
 
         return new ArrayIterator($this->data);
-    }
-
-    /**
-     * Filters the collection by start and end date.
-     *
-     * @param $start The start date.
-     * @param $end The end date.
-     * @param $equals Whether to include start and end dates, defaults to true.
-     */
-    public function between(
-        string $start,
-        string $end,
-        bool $equals = true
-    ): self {
-        $this->start = new DateTime($start);
-        $this->end = new DateTime($end);
-        $this->equals = $equals;
-
-        return $this;
     }
 
     /**

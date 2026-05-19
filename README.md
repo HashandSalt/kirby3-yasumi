@@ -78,7 +78,7 @@ return [
 
 ### Methods
 
-#### `between(string $start, string $end, bool $equals)`
+#### `filterByRange(string|DateTimeInterface $start, string|DateTimeInterface $end, bool $equals)`
 
 Filters the collection by start and end date.
 
@@ -103,6 +103,10 @@ Filters the collection by holiday type. Available type filters:
   Holidays that are celebrated due to its seasonal character (e.g. Halloween).
 - `other`
   Holidays that fall outside any of the above type.
+
+#### `filterByDate(string|DateTimeInterface $date)`
+
+Filters the collection by date.
 
 #### `find(string $id)`
 
