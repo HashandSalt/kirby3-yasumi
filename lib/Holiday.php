@@ -4,6 +4,7 @@ namespace Hashsandsalt\Yasumi;
 
 use Kirby\Content\Content;
 use Kirby\Content\Field;
+use Kirby\Template\Template;
 use Kirby\Toolkit\Str;
 use Yasumi\Holiday as YasumiHoliday;
 
@@ -16,6 +17,7 @@ class Holiday
     private Content $content;
     private ?string $id = null;
     private ?string $slug = null;
+    public string $template = 'holiday';
 
     public function __construct(YasumiHoliday $holiday)
     {
