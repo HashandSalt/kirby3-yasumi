@@ -1,20 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateInterval;
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -23,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Sweden extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'SE';
@@ -34,7 +37,6 @@ class Sweden extends AbstractProvider
     /**
      * Initialize holidays for Sweden.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -68,6 +70,14 @@ class Sweden extends AbstractProvider
         $this->calculateNationalDay();
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Sweden',
+            'https://sv.wikipedia.org/wiki/Helgdagar_i_Sverige',
+        ];
+    }
+
     /**
      * Epiphany Eve.
      *
@@ -77,24 +87,22 @@ class Sweden extends AbstractProvider
      *
      * Epiphany Eve is often treated with the afternoon off, but this varies depending on employer.
      *
-     * @link https://en.wikipedia.org/wiki/Twelfth_Night_(holiday)
+     * @see https://en.wikipedia.org/wiki/Twelfth_Night_(holiday)
      *
-     * @throws InvalidDateException
      * @throws UnknownLocaleException
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function calculateEpiphanyEve(): void
+    protected function calculateEpiphanyEve(): void
     {
         $this->addHoliday(new Holiday(
             'epiphanyEve',
             [],
-            new DateTime("$this->year-1-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-1-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OBSERVANCE
         ));
     }
-
 
     /**
      * Walpurgis Night.
@@ -105,19 +113,18 @@ class Sweden extends AbstractProvider
      *
      * Walpurgis Night is often treated with the afternoon off, but this varies depending on employer.
      *
-     * @link https://en.wikipedia.org/wiki/Walpurgis_Night
+     * @see https://en.wikipedia.org/wiki/Walpurgis_Night
      *
-     * @throws InvalidDateException
      * @throws UnknownLocaleException
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function calculateWalpurgisEve(): void
+    protected function calculateWalpurgisEve(): void
     {
         $this->addHoliday(new Holiday(
             'walpurgisEve',
             [],
-            new DateTime("$this->year-4-30", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-4-30", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OBSERVANCE
         ));
@@ -135,16 +142,15 @@ class Sweden extends AbstractProvider
      * In Sweden the holiday has always been on a Saturday (between June 20 and June 26). Many of the celebrations of
      * midsummer take place on midsummer eve, when many workplaces are closed and shops must close their doors at noon.
      *
-     * @link https://en.wikipedia.org/wiki/Midsummer#Sweden
+     * @see https://en.wikipedia.org/wiki/Midsummer#Sweden
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateStJohnsHolidays(): void
+    protected function calculateStJohnsHolidays(): void
     {
-        $date = new DateTime("$this->year-6-20 this saturday", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("{$this->year}-6-20 this saturday", DateTimeZoneFactory::getDateTimeZone($this->timezone));
         $this->addHoliday(new Holiday(
             'stJohnsDay',
             [],
@@ -152,7 +158,7 @@ class Sweden extends AbstractProvider
             $this->locale
         ));
 
-        $date->sub(new DateInterval('P1D'));
+        $date->sub(new \DateInterval('P1D'));
         $this->addHoliday(new Holiday(
             'stJohnsEve',
             [],
@@ -175,17 +181,16 @@ class Sweden extends AbstractProvider
      * the dead. In the Swedish calendar, the observance takes place on the Saturday between 31 October and 6 November.
      * In many Lutheran Churches, it is moved to the first Sunday of November.
      *
-     * @link https://en.wikipedia.org/wiki/All_Saints%27_Day
-     * @link https://www.timeanddate.com/holidays/sweden/all-saints-day
+     * @see https://en.wikipedia.org/wiki/All_Saints%27_Day
+     * @see https://www.timeanddate.com/holidays/sweden/all-saints-day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateAllSaintsHolidays(): void
+    protected function calculateAllSaintsHolidays(): void
     {
-        $date = new DateTime("$this->year-10-31 this saturday", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("{$this->year}-10-31 this saturday", DateTimeZoneFactory::getDateTimeZone($this->timezone));
         $this->addHoliday(new Holiday(
             'allSaintsDay',
             [],
@@ -193,7 +198,7 @@ class Sweden extends AbstractProvider
             $this->locale
         ));
 
-        $date->sub(new DateInterval('P1D'));
+        $date->sub(new \DateInterval('P1D'));
         $this->addHoliday(new Holiday(
             'allSaintsEve',
             [],
@@ -204,7 +209,7 @@ class Sweden extends AbstractProvider
     }
 
     /**
-     * National Day
+     * National Day.
      *
      * National Day of Sweden (Sveriges nationaldag) is a national holiday observed in Sweden on 6 June every year.
      * Prior to 1983, the day was celebrated as Svenska flaggans dag (Swedish flag day). At that time, the day was
@@ -212,12 +217,11 @@ class Sweden extends AbstractProvider
      * Olympic Stadium, in honour of the election of King Gustav Vasa in 1523, as this was considered the foundation of
      * modern Sweden.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateNationalDay(): void
+    protected function calculateNationalDay(): void
     {
         if ($this->year < 1916) {
             return;
@@ -233,7 +237,7 @@ class Sweden extends AbstractProvider
         $this->addHoliday(new Holiday(
             'nationalDay',
             ['sv' => $holidayName],
-            new DateTime("$this->year-6-6", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-6-6", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }

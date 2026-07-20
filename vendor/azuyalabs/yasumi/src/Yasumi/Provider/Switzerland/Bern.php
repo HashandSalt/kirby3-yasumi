@@ -1,18 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Switzerland;
 
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -21,14 +25,15 @@ use Yasumi\Provider\Switzerland;
 /**
  * Provider for all holidays in Bern (Switzerland).
  *
- * @link https://en.wikipedia.org/wiki/Canton_of_Bern
+ * @see https://en.wikipedia.org/wiki/Canton_of_Bern
+ * @see https://www.fin.be.ch/fin/fr/index/personal/personalrecht/wdb.thema.212.html
  */
 class Bern extends Switzerland
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'CH-BE';
@@ -36,7 +41,6 @@ class Bern extends Switzerland
     /**
      * Initialize holidays for Bern (Switzerland).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception

@@ -1,18 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi;
 
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\MissingTranslationException;
 use Yasumi\Exception\UnknownLocaleException;
 
@@ -22,39 +26,37 @@ use Yasumi\Exception\UnknownLocaleException;
  * A substitute holiday is a holiday given in lieu of another holiday, if that day falls in a weekend or
  * overlaps with other holidays, so that people do not "lose" a day off in these years.
  *
- * @link https://en.wikipedia.org/wiki/Substitute_holiday
+ * @see https://en.wikipedia.org/wiki/Substitute_holiday
  */
 class SubstituteHoliday extends Holiday
 {
     /**
-     * @var Holiday
      * @deprecated public access to this property is deprecated in favor of getSubstitutedHoliday()
      * @see getSubstitutedHoliday()
      */
-    public $substitutedHoliday;
+    public Holiday $substitutedHoliday;
 
     /**
-     * @var array list of translations of the "{0} observed" pattern
+     * @var array<string> list of translations of the "{0} observed" pattern
      */
-    public $substituteHolidayTranslations;
+    public array $substituteHolidayTranslations;
 
     /**
      * Creates a new SubstituteHoliday.
      *
      * If a holiday date needs to be defined for a specific timezone, make sure that the date instance
-     * (DateTimeInterface) has the correct timezone set. Otherwise the default system timezone is used.
+     * (DateTimeInterface) has the correct timezone set. Otherwise, the default system timezone is used.
      *
-     * @param Holiday $substitutedHoliday The holiday being substituted
-     * @param array $names An array containing the name/description of this holiday
-     *                                               in various languages. Overrides global translations
-     * @param \DateTimeInterface $date A DateTimeInterface instance representing the date of the holiday
-     * @param string $displayLocale Locale (i.e. language) in which the holiday information needs to
-     *                                               be displayed in. (Default 'en_US')
-     * @param string $type The type of holiday. Use the following constants: TYPE_OFFICIAL,
-     *                                               TYPE_OBSERVANCE, TYPE_SEASON, TYPE_BANK or TYPE_OTHER. By default
-     *                                               an official holiday is considered.
+     * @param Holiday               $substitutedHoliday The holiday being substituted
+     * @param array<string, string> $names              An array containing the name/description of this holiday
+     *                                                  in various languages. Overrides global translations
+     * @param \DateTimeInterface    $date               A DateTimeInterface instance representing the date of the holiday
+     * @param string                $displayLocale      Locale (i.e. language) in which the holiday information needs to
+     *                                                  be displayed in. (Default 'en_US')
+     * @param string                $type               The type of holiday. Use the following constants: TYPE_OFFICIAL,
+     *                                                  TYPE_OBSERVANCE, TYPE_SEASON, TYPE_BANK or TYPE_OTHER. By default,
+     *                                                  an official holiday is considered.
      *
-     * @throws InvalidDateException
      * @throws UnknownLocaleException
      * @throws \InvalidArgumentException
      * @throws \Exception
@@ -64,7 +66,7 @@ class SubstituteHoliday extends Holiday
         array $names,
         \DateTimeInterface $date,
         string $displayLocale = self::DEFAULT_LOCALE,
-        string $type = self::TYPE_OFFICIAL
+        string $type = self::TYPE_OFFICIAL,
     ) {
         $this->substitutedHoliday = $substitutedHoliday;
 
@@ -81,7 +83,7 @@ class SubstituteHoliday extends Holiday
     /**
      * Returns the holiday being substituted.
      *
-     * @return Holiday the holiday being substituted.
+     * @return Holiday the holiday being substituted
      */
     public function getSubstitutedHoliday(): Holiday
     {
@@ -89,31 +91,32 @@ class SubstituteHoliday extends Holiday
     }
 
     /**
-     * Returns the localized name of this holiday
+     * Returns the localized name of this holiday.
      *
      * The provided locales are searched for a translation. The first locale containing a translation will be used.
      *
      * If no locale is provided, proceed as if an array containing the display locale, Holiday::DEFAULT_LOCALE ('en_US'), and
      * Holiday::LOCALE_KEY (the holiday key) was provided.
      *
-     * @param array $locales The locales to search for translations
+     * @param array<string> $locales The locales to search for translations
      *
-     * @return string
      * @throws MissingTranslationException
      *
      * @see Holiday::DEFAULT_LOCALE
      * @see Holiday::LOCALE_KEY
      */
-    public function getName(array $locales = null): string
+    public function getName(?array $locales = null): string
     {
         $name = parent::getName();
 
-        if ($name === $this->getKey()) {
-            foreach ($this->getLocales($locales) as $locales) {
-                $pattern = $this->substituteHolidayTranslations[$locales] ?? null;
-                if ($pattern) {
-                    return \str_replace('{0}', $this->substitutedHoliday->getName(), $pattern);
-                }
+        if ($name !== $this->getKey()) {
+            return $name;
+        }
+
+        foreach ($this->getLocales($locales) as $localeList) {
+            $pattern = $this->substituteHolidayTranslations[$localeList] ?? null;
+            if ($pattern) {
+                return str_replace('{0}', $this->substitutedHoliday->getName(), $pattern);
             }
         }
 

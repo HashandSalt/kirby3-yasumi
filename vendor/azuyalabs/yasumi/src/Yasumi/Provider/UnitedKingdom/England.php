@@ -1,17 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\UnitedKingdom;
 
+use Yasumi\Holiday;
 use Yasumi\Provider\UnitedKingdom;
 
 /**
@@ -21,13 +27,23 @@ use Yasumi\Provider\UnitedKingdom;
  * (50,301 sq mi), and has a population of 5,619,400. London, England's capital, is also the capital of
  * and the largest city in the United Kingdom.
  *
- * @link https://en.wikipedia.org/wiki/England
+ * @see https://en.wikipedia.org/wiki/England
  */
 class England extends UnitedKingdom
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'GB-ENG';
+
+    /**
+     * Initialize holidays for England (United Kingdom)..
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale, Holiday::TYPE_BANK));
+    }
 }

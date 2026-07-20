@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Austria;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Austria;
@@ -21,12 +24,12 @@ use Yasumi\Provider\Austria;
 /**
  * Provider for all holidays in Upper Austria (Austria).
  *
- * @link https://en.wikipedia.org/wiki/Upper_Austria
+ * @see https://en.wikipedia.org/wiki/Upper_Austria
  */
 class UpperAustria extends Austria
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'AT-4';
@@ -34,7 +37,6 @@ class UpperAustria extends Austria
     /**
      * Initialize holidays for Upper Austria (Austria).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -58,14 +60,13 @@ class UpperAustria extends Austria
      * Florian organized and trained an elite group of soldiers whose sole duty
      * was to fight fires. His feast day is May 4 (since 304).
      *
-     * @link https://en.wikipedia.org/wiki/Saint_Florian
+     * @see https://en.wikipedia.org/wiki/Saint_Florian
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateStFloriansDay(): void
+    protected function calculateStFloriansDay(): void
     {
         if ($this->year < 304) {
             return;
@@ -74,7 +75,7 @@ class UpperAustria extends Austria
         $this->addHoliday(new Holiday(
             'stFloriansDay',
             [],
-            new DateTime($this->year . '-5-4', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-5-4", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }

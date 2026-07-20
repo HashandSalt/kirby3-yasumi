@@ -7,35 +7,44 @@ namespace Composer\Autoload;
 class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
 {
     public static $prefixLengthsPsr4 = array (
-        'Y' => 
+        'Y' =>
         array (
             'Yasumi\\' => 7,
         ),
-        'K' => 
+        'K' =>
         array (
             'Kirby\\' => 6,
+        ),
+        'H' =>
+        array (
+            'Hashsandsalt\\Yasumi\\' => 20,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Yasumi\\' => 
+        'Yasumi\\' =>
         array (
             0 => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi',
         ),
-        'Kirby\\' => 
+        'Kirby\\' =>
         array (
             0 => __DIR__ . '/..' . '/getkirby/composer-installer/src',
+        ),
+        'Hashsandsalt\\Yasumi\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/lib',
         ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Hashsandsalt\\Yasumi\\Holiday' => __DIR__ . '/../..' . '/lib/Holiday.php',
+        'Hashsandsalt\\Yasumi\\Holidays' => __DIR__ . '/../..' . '/lib/Holidays.php',
         'Kirby\\ComposerInstaller\\CmsInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/CmsInstaller.php',
         'Kirby\\ComposerInstaller\\Installer' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Installer.php',
         'Kirby\\ComposerInstaller\\Plugin' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Plugin.php',
         'Kirby\\ComposerInstaller\\PluginInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/PluginInstaller.php',
         'Yasumi\\Exception\\Exception' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Exception/Exception.php',
-        'Yasumi\\Exception\\InvalidDateException' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Exception/InvalidDateException.php',
         'Yasumi\\Exception\\InvalidYearException' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Exception/InvalidYearException.php',
         'Yasumi\\Exception\\MissingTranslationException' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Exception/MissingTranslationException.php',
         'Yasumi\\Exception\\ProviderNotFoundException' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Exception/ProviderNotFoundException.php',
@@ -51,6 +60,8 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Holiday' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Holiday.php',
         'Yasumi\\ProviderInterface' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/ProviderInterface.php',
         'Yasumi\\Provider\\AbstractProvider' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/AbstractProvider.php',
+        'Yasumi\\Provider\\Andorra' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Andorra.php',
+        'Yasumi\\Provider\\Argentina' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Argentina.php',
         'Yasumi\\Provider\\Australia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Australia.php',
         'Yasumi\\Provider\\Australia\\AustralianCapitalTerritory' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Australia/AustralianCapitalTerritory.php',
         'Yasumi\\Provider\\Australia\\NewSouthWales' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Australia/NewSouthWales.php',
@@ -82,6 +93,7 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Provider\\Belgium' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Belgium.php',
         'Yasumi\\Provider\\Bosnia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Bosnia.php',
         'Yasumi\\Provider\\Brazil' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Brazil.php',
+        'Yasumi\\Provider\\Bulgaria' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Bulgaria.php',
         'Yasumi\\Provider\\Canada' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Canada.php',
         'Yasumi\\Provider\\Canada\\Alberta' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Canada/Alberta.php',
         'Yasumi\\Provider\\Canada\\BritishColumbia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Canada/BritishColumbia.php',
@@ -100,6 +112,7 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Provider\\CommonHolidays' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/CommonHolidays.php',
         'Yasumi\\Provider\\Croatia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Croatia.php',
         'Yasumi\\Provider\\CzechRepublic' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/CzechRepublic.php',
+        'Yasumi\\Provider\\Czechia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Czechia.php',
         'Yasumi\\Provider\\DateTimeZoneFactory' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/DateTimeZoneFactory.php',
         'Yasumi\\Provider\\Denmark' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Denmark.php',
         'Yasumi\\Provider\\Estonia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Estonia.php',
@@ -108,6 +121,7 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Provider\\France\\BasRhin' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/France/BasRhin.php',
         'Yasumi\\Provider\\France\\HautRhin' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/France/HautRhin.php',
         'Yasumi\\Provider\\France\\Moselle' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/France/Moselle.php',
+        'Yasumi\\Provider\\Georgia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Georgia.php',
         'Yasumi\\Provider\\Germany' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Germany.php',
         'Yasumi\\Provider\\Germany\\BadenWurttemberg' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Germany/BadenWurttemberg.php',
         'Yasumi\\Provider\\Germany\\Bavaria' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Germany/Bavaria.php',
@@ -127,12 +141,14 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Provider\\Germany\\Thuringia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Germany/Thuringia.php',
         'Yasumi\\Provider\\Greece' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Greece.php',
         'Yasumi\\Provider\\Hungary' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Hungary.php',
+        'Yasumi\\Provider\\Iran' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Iran.php',
         'Yasumi\\Provider\\Ireland' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Ireland.php',
         'Yasumi\\Provider\\Italy' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Italy.php',
         'Yasumi\\Provider\\Japan' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Japan.php',
         'Yasumi\\Provider\\Latvia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Latvia.php',
         'Yasumi\\Provider\\Lithuania' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Lithuania.php',
         'Yasumi\\Provider\\Luxembourg' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Luxembourg.php',
+        'Yasumi\\Provider\\Mexico' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Mexico.php',
         'Yasumi\\Provider\\Netherlands' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Netherlands.php',
         'Yasumi\\Provider\\NewZealand' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/NewZealand.php',
         'Yasumi\\Provider\\Norway' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Norway.php',
@@ -140,7 +156,9 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Provider\\Portugal' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Portugal.php',
         'Yasumi\\Provider\\Romania' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Romania.php',
         'Yasumi\\Provider\\Russia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Russia.php',
+        'Yasumi\\Provider\\SanMarino' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/SanMarino.php',
         'Yasumi\\Provider\\Slovakia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Slovakia.php',
+        'Yasumi\\Provider\\Slovenia' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Slovenia.php',
         'Yasumi\\Provider\\SouthAfrica' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/SouthAfrica.php',
         'Yasumi\\Provider\\SouthKorea' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/SouthKorea.php',
         'Yasumi\\Provider\\Spain' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Spain.php',
@@ -191,13 +209,16 @@ class ComposerStaticInitd88c4d610df115c3390fa52d43188afc
         'Yasumi\\Provider\\Switzerland\\Vaud' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Switzerland/Vaud.php',
         'Yasumi\\Provider\\Switzerland\\Zug' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Switzerland/Zug.php',
         'Yasumi\\Provider\\Switzerland\\Zurich' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Switzerland/Zurich.php',
+        'Yasumi\\Provider\\Turkey' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Turkey.php',
         'Yasumi\\Provider\\USA' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/USA.php',
+        'Yasumi\\Provider\\USA\\NYSE' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/USA/NYSE.php',
         'Yasumi\\Provider\\Ukraine' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Ukraine.php',
         'Yasumi\\Provider\\UnitedKingdom' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/UnitedKingdom.php',
         'Yasumi\\Provider\\UnitedKingdom\\England' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/UnitedKingdom/England.php',
         'Yasumi\\Provider\\UnitedKingdom\\NorthernIreland' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/UnitedKingdom/NorthernIreland.php',
         'Yasumi\\Provider\\UnitedKingdom\\Scotland' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/UnitedKingdom/Scotland.php',
         'Yasumi\\Provider\\UnitedKingdom\\Wales' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/UnitedKingdom/Wales.php',
+        'Yasumi\\Provider\\Venezuela' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Provider/Venezuela.php',
         'Yasumi\\SubstituteHoliday' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/SubstituteHoliday.php',
         'Yasumi\\Translations' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/Translations.php',
         'Yasumi\\TranslationsInterface' => __DIR__ . '/..' . '/azuyalabs/yasumi/src/Yasumi/TranslationsInterface.php',

@@ -1,18 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Australia;
 
-use DateTime;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Australia;
@@ -20,17 +24,16 @@ use Yasumi\Provider\DateTimeZoneFactory;
 
 /**
  * Provider for all holidays in Tasmania (Australia).
- *
  */
 class Tasmania extends Australia
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'AU-TAS';
 
-    public $timezone = 'Australia/Tasmania';
+    public string $timezone = 'Australia/Tasmania';
 
     /**
      * Initialize holidays for Tasmania (Australia).
@@ -49,13 +52,13 @@ class Tasmania extends Australia
     }
 
     /**
-     * Eight Hours Day
+     * Eight Hours Day.
      *
      * @throws \Exception
      */
-    private function calculateEightHoursDay(): void
+    protected function calculateEightHoursDay(): void
     {
-        $date = new DateTime("second monday of march $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("second monday of march {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
         $this->addHoliday(new Holiday('eightHourDay', ['en' => 'Eight Hour Day'], $date, $this->locale));
     }
@@ -70,36 +73,36 @@ class Tasmania extends Australia
      * Her actual birthday is on April 21, but it's celebrated as a public holiday on the second Monday of June.
      *  (Except QLD & WA)
      *
-     * @link https://www.timeanddate.com/holidays/australia/queens-birthday
+     * @see https://www.timeanddate.com/holidays/australia/queens-birthday
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function calculateQueensBirthday(): void
+    protected function calculateQueensBirthday(): void
     {
         $this->addHoliday(new Holiday(
             'queensBirthday',
             [],
-            new DateTime('second monday of june ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("second monday of june {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OFFICIAL
         ));
     }
 
     /**
-     * Recreation Day
+     * Recreation Day.
      *
-     * @link https://en.wikipedia.org/wiki/Recreation_Day_holiday
+     * @see https://en.wikipedia.org/wiki/Recreation_Day_holiday
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function calculateRecreationDay(): void
+    protected function calculateRecreationDay(): void
     {
         $this->addHoliday(new Holiday(
             'recreationDay',
             ['en' => 'Recreation Day'],
-            new DateTime('first monday of november ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("first monday of november {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OFFICIAL
         ));

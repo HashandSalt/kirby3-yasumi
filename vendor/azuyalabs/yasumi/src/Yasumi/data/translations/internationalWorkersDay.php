@@ -1,18 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 // Translations for International Workers' Day
 return [
+    'bg' => 'Ден на труда и на международната работническа солидарност',
     'bs_Latn' => 'Praznik rada',
     'ca' => 'Dia del Treball',
     'cs' => 'Svátek práce',
@@ -42,6 +47,7 @@ return [
     'ro' => 'Ziua internațională a muncii',
     'ru' => 'День международной солидарности трудящихся',
     'sk' => 'Sviatok práce',
+    'sl' => 'Praznik dela',
     'sv' => 'första maj',
     'uk' => 'День міжнародної солідарності трудящих',
 ];

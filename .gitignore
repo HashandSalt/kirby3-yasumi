@@ -1,5 +1,8 @@
+# OS files
 .DS_Store
-composer.lock
+
+# npm modules
+/node_modules
 
 # files of Composer dependencies that are not needed for the plugin
 /vendor/**/.*

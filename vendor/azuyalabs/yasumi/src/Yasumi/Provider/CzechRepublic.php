@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -21,15 +24,16 @@ use Yasumi\Holiday;
  * Provider for all holidays in Czech republic.
  *
  * Class CzechRepublic
- * @package Yasumi\Provider
+ *
  * @author  Dennis Fridrich <fridrich.dennis@gmail.com>
  */
 class CzechRepublic extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'CZ';
@@ -37,7 +41,6 @@ class CzechRepublic extends AbstractProvider
     /**
      * Initialize holidays for the Czech Republic.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -57,22 +60,30 @@ class CzechRepublic extends AbstractProvider
         $this->calculateCzechStatehoodDay();
         $this->calculateIndependentCzechoslovakStateDay();
         $this->calculateStruggleForFreedomAndDemocracyDay();
-        $this->addHoliday($this->christmasEve($this->year, $this->timezone, $this->locale));
+        $this->addHoliday($this->christmasEve($this->year, $this->timezone, $this->locale, Holiday::TYPE_OFFICIAL));
         $this->addHoliday($this->christmasDay($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->secondChristmasDay($this->year, $this->timezone, $this->locale));
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic',
+            'https://cs.wikipedia.org/wiki/%C4%8Cesk%C3%BD_st%C3%A1tn%C3%AD_sv%C3%A1tek',
+            'https://www.e-sbirka.cz/sb/2000/245/0000-00-00?zalozka=text#par_2',
+        ];
+    }
+
     /**
-     * Day of renewal of independent Czech state
+     * Day of renewal of independent Czech state.
      *
      * @see https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateRenewalOfCzechIndependenceDay(): void
+    protected function calculateRenewalOfCzechIndependenceDay(): void
     {
         $this->addHoliday(new Holiday(
             'czechRenewalOfIndependentStateDay',
@@ -80,13 +91,13 @@ class CzechRepublic extends AbstractProvider
                 'cs' => 'Den obnovy samostatného českého státu',
                 'en' => 'Day of renewal of the independent Czech state',
             ],
-            new DateTime($this->year . '-01-01', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-01-01", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }
 
     /**
-     * Saints Cyril and Methodius Day
+     * Saints Cyril and Methodius Day.
      *
      * Saints Cyril and Methodius were two Byzantine Christian theologians and Christian missionaries who were brothers.
      * Through their work they influenced the cultural development of all Slavs, for which they received the title
@@ -101,12 +112,11 @@ class CzechRepublic extends AbstractProvider
      * @see https://en.wikipedia.org/wiki/Saints_Cyril_and_Methodius
      * @see https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateSaintsCyrilAndMethodiusDay(): void
+    protected function calculateSaintsCyrilAndMethodiusDay(): void
     {
         $this->addHoliday(new Holiday(
             'saintsCyrilAndMethodiusDay',
@@ -114,13 +124,13 @@ class CzechRepublic extends AbstractProvider
                 'cs' => 'Den slovanských věrozvěstů Cyrila a Metoděje',
                 'en' => 'Saints Cyril and Methodius Day',
             ],
-            new DateTime($this->year . '-07-5', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-07-5", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }
 
     /**
-     * Jan Hus Day
+     * Jan Hus Day.
      *
      * Jan Hus, often referred to in English as John Hus or John Huss, was a Czech priest, philosopher, early Christian
      * reformer and Master at Charles University in Prague. After John Wycliffe, the theorist of ecclesiastical
@@ -129,23 +139,22 @@ class CzechRepublic extends AbstractProvider
      * @see https://en.wikipedia.org/wiki/Jan_Hus
      * @see https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateJanHusDay(): void
+    protected function calculateJanHusDay(): void
     {
         $this->addHoliday(new Holiday(
             'janHusDay',
             ['cs' => 'Den upálení mistra Jana Husa', 'en' => 'Jan Hus Day'],
-            new DateTime($this->year . '-07-6', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-07-6", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }
 
     /**
-     * St. Wenceslas Day (Czech Statehood Day)
+     * St. Wenceslas Day (Czech Statehood Day).
      *
      * Wenceslaus I, Wenceslas I, or Vaclav the Good was the duke of Bohemia from 921 until his assassination in 935,
      * in a plot by his brother, Boleslav the Cruel.
@@ -157,12 +166,11 @@ class CzechRepublic extends AbstractProvider
      * @see https://en.wikipedia.org/wiki/Wenceslaus_I,_Duke_of_Bohemia
      * @see https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateCzechStatehoodDay(): void
+    protected function calculateCzechStatehoodDay(): void
     {
         $this->addHoliday(new Holiday(
             'czechStateHoodDay',
@@ -170,40 +178,38 @@ class CzechRepublic extends AbstractProvider
                 'cs' => 'Den české státnosti',
                 'en' => 'St. Wenceslas Day (Czech Statehood Day)',
             ],
-            new DateTime($this->year . '-09-28', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-09-28", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }
 
     /**
-     * Independent Czechoslovak State Day
+     * Independent Czechoslovak State Day.
      *
      * @see https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateIndependentCzechoslovakStateDay(): void
+    protected function calculateIndependentCzechoslovakStateDay(): void
     {
         $this->addHoliday(new Holiday('independentCzechoslovakStateDay', [
             'cs' => 'Den vzniku samostatného československého státu',
             'en' => 'Independent Czechoslovak State Day',
-        ], new DateTime($this->year . '-10-28', new \DateTimeZone($this->timezone)), $this->locale));
+        ], new \DateTime("{$this->year}-10-28", new \DateTimeZone($this->timezone)), $this->locale));
     }
 
     /**
-     * Struggle for Freedom and Democracy Day
+     * Struggle for Freedom and Democracy Day.
      *
      * @see https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateStruggleForFreedomAndDemocracyDay(): void
+    protected function calculateStruggleForFreedomAndDemocracyDay(): void
     {
         $this->addHoliday(new Holiday(
             'struggleForFreedomAndDemocracyDay',
@@ -211,7 +217,7 @@ class CzechRepublic extends AbstractProvider
                 'cs' => 'Den boje za svobodu a demokracii',
                 'en' => 'Struggle for Freedom and Democracy Day',
             ],
-            new DateTime($this->year . '-11-17', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-11-17", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }

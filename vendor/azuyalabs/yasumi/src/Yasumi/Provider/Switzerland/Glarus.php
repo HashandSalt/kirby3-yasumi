@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Switzerland;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -23,14 +26,14 @@ use Yasumi\Provider\Switzerland;
 /**
  * Provider for all holidays in Glarus (Switzerland).
  *
- * @link https://en.wikipedia.org/wiki/Canton_of_Glarus
+ * @see https://en.wikipedia.org/wiki/Canton_of_Glarus
  */
 class Glarus extends Switzerland
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'CH-GL';
@@ -38,7 +41,6 @@ class Glarus extends Switzerland
     /**
      * Initialize holidays for Glarus (Switzerland).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -61,23 +63,22 @@ class Glarus extends Switzerland
     }
 
     /**
-     * Näfelser Fahrt
+     * Näfelser Fahrt.
      *
      * The Battle of Näfels was fought on 9 April 1388 between Glarus with their allies, the Old Swiss
      * Confederation, and the Habsburgs. In 1389, the first Näfelser Fahrt, a pilgrimage to the site
      * of the battle was held.
      *
-     * @link https://en.wikipedia.org/wiki/Battle_of_N%C3%A4fels
+     * @see https://en.wikipedia.org/wiki/Battle_of_N%C3%A4fels
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateNafelserFahrt(): void
+    protected function calculateNafelserFahrt(): void
     {
         if ($this->year >= 1389) {
-            $date = new DateTime('First Thursday of ' . $this->year . '-04', DateTimeZoneFactory::getDateTimeZone($this->timezone));
+            $date = new \DateTime("First Thursday of {$this->year}-04", DateTimeZoneFactory::getDateTimeZone($this->timezone));
             $this->addHoliday(new Holiday('nafelserFahrt', [
                 'de' => 'Näfelser Fahrt',
             ], $date, $this->locale, Holiday::TYPE_OTHER));

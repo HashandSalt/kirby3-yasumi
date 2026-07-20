@@ -1,14 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
@@ -22,10 +26,11 @@ use Yasumi\Holiday;
  */
 class Lithuania extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'LT';
@@ -46,7 +51,7 @@ class Lithuania extends AbstractProvider
     public const STATEHOOD_YEAR = 1253;
 
     /**
-     * The year when All Souls Day became a holiday
+     * The year when All Souls Day became a holiday.
      */
     public const ALL_SOULS_DAY = 2020;
 
@@ -67,6 +72,8 @@ class Lithuania extends AbstractProvider
         $this->addHoliday($this->easter($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->internationalWorkersDay($this->year, $this->timezone, $this->locale));
+        $this->addMothersDay();
+        $this->addFathersDay();
         $this->addHoliday($this->stJohnsDay($this->year, $this->timezone, $this->locale));
         $this->addStatehoodDay();
         $this->addHoliday($this->assumptionOfMary($this->year, $this->timezone, $this->locale));
@@ -77,13 +84,22 @@ class Lithuania extends AbstractProvider
         $this->addHoliday($this->secondChristmasDay($this->year, $this->timezone, $this->locale));
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Lithuania',
+            'https://lt.wikipedia.org/wiki/S%C4%85ra%C5%A1as:Lietuvos_%C5%A1vent%C4%97s',
+            'https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/10c6bfd07bd511e6a0f68fd135e6f40c/asr',
+        ];
+    }
+
     /**
      * The Act of Reinstating Independence of Lithuania was signed on February 16, 1918.
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addRestorationOfTheStateDay(): void
+    protected function addRestorationOfTheStateDay(): void
     {
         if ($this->year >= self::RESTORATION_OF_THE_STATE_YEAR) {
             $this->addHoliday(new Holiday('restorationOfTheStateOfLithuaniaDay', [
@@ -99,7 +115,7 @@ class Lithuania extends AbstractProvider
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addRestorationOfIndependenceDay(): void
+    protected function addRestorationOfIndependenceDay(): void
     {
         if ($this->year >= self::RESTORATION_OF_INDEPENDENCE_YEAR) {
             $this->addHoliday(new Holiday('restorationOfIndependenceOfLithuaniaDay', [
@@ -110,13 +126,43 @@ class Lithuania extends AbstractProvider
     }
 
     /**
+     * Mother's Day.
+     *
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
+    protected function addMothersDay(): void
+    {
+        $this->addHoliday(new Holiday(
+            'mothersDay',
+            [],
+            new \DateTime("first sunday of may {$this->year}", new \DateTimeZone($this->timezone))
+        ));
+    }
+
+    /**
+     * Father's Day.
+     *
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
+    protected function addFathersDay(): void
+    {
+        $this->addHoliday(new Holiday(
+            'fathersDay',
+            [],
+            new \DateTime("first sunday of june {$this->year}", new \DateTimeZone($this->timezone))
+        ));
+    }
+
+    /**
      * Statehood Day is an annual public holiday in Lithuania celebrated on July 6 to commemorate
      * the coronation in 1253 of Mindaugas as the only King of Lithuania.
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addStatehoodDay(): void
+    protected function addStatehoodDay(): void
     {
         if ($this->year >= self::STATEHOOD_YEAR) {
             $this->addHoliday(new Holiday('statehoodDay', [
@@ -132,13 +178,13 @@ class Lithuania extends AbstractProvider
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addAllSoulsDay(): void
+    protected function addAllSoulsDay(): void
     {
         if ($this->year >= self::ALL_SOULS_DAY) {
             $this->addHoliday(new Holiday(
                 'allSoulsDay',
                 [],
-                new \DateTime("$this->year-11-02", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-11-02", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

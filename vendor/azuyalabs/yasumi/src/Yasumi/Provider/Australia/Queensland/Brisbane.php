@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Australia\Queensland;
 
-use DateInterval;
-use DateTime;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Australia\Queensland;
@@ -21,18 +24,17 @@ use Yasumi\Provider\DateTimeZoneFactory;
 
 /**
  * Provider for all holidays in Brisbane (Australia).
- *
  */
 class Brisbane extends Queensland
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region. This one is not a proper ISO3166 code, but there isn't one specifically for Brisbane,
      * and I believe this is a logical extension.
      */
     public const ID = 'AU-QLD-BRI';
 
-    public $timezone = 'Australia/Brisbane';
+    public string $timezone = 'Australia/Brisbane';
 
     /**
      * Initialize holidays for Brisbane (Australia).
@@ -59,19 +61,19 @@ class Brisbane extends Queensland
      * "People's Day". The Ekka starts on the first Friday in August, except if the first Friday is before 5 August, in
      * which case it starts on the second Friday of August. People's Day is then the Wednesday after the Ekka commences.
      *
-     * @link https://en.wikipedia.org/wiki/Ekka
+     * @see https://en.wikipedia.org/wiki/Ekka
      *
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculatePeoplesDay(): void
+    protected function calculatePeoplesDay(): void
     {
-        $date = new DateTime('first friday of august ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("first friday of august {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone));
         if ($date->format('d') < 5) {
-            $date = $date->add(new DateInterval('P7D'));
+            $date = $date->add(new \DateInterval('P7D'));
         }
-        $date = $date->add(new DateInterval('P5D'));
+        $date = $date->add(new \DateInterval('P5D'));
         $this->addHoliday(new Holiday('peoplesDay', ['en' => 'Ekka People’s Day'], $date, $this->locale));
     }
 }

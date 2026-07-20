@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Spain;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -30,14 +33,14 @@ use Yasumi\Provider\Spain;
  * Castile–La Mancha to the west, and Murcia to the south. It is formed by the provinces of Castelló, València and
  * Alacant.
  *
- * @link https://en.wikipedia.org/wiki/Valencian_Community
+ * @see https://en.wikipedia.org/wiki/Valencian_Community
  */
 class ValencianCommunity extends Spain
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'ES-VC';
@@ -45,7 +48,6 @@ class ValencianCommunity extends Spain
     /**
      * Initialize holidays for the Valencian Community (Spain).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -73,14 +75,13 @@ class ValencianCommunity extends Spain
      * autonomous communities of Catalonia, Aragon, Castile-La Mancha, and Mercia. The Balearic Islands are close by in
      * the Mediterranean. The Valencia region gained some autonomy in 1977 and full autonomy in 1982.
      *
-     * @link https://www.timeanddate.com/holidays/spain/the-valencian-community-day
+     * @see https://www.timeanddate.com/holidays/spain/the-valencian-community-day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateValencianCommunityDay(): void
+    protected function calculateValencianCommunityDay(): void
     {
         if ($this->year >= 1239) {
             $this->addHoliday(new Holiday(
@@ -89,7 +90,7 @@ class ValencianCommunity extends Spain
                     'ca' => 'Diada Nacional del País Valencià',
                     'es' => 'Día de la Comunidad Valenciana',
                 ],
-                new DateTime("$this->year-10-9", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-10-9", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

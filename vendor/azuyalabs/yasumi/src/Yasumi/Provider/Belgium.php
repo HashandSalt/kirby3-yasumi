@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -22,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Belgium extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'BE';
@@ -33,7 +37,6 @@ class Belgium extends AbstractProvider
     /**
      * Initialize holidays for Belgium.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -57,7 +60,7 @@ class Belgium extends AbstractProvider
         $this->addHoliday($this->assumptionOfMary($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->armisticeDay($this->year, $this->timezone, $this->locale));
 
-        /**
+        /*
          * Belgian National Day.
          *
          * Belgian National Day is the National Day of Belgium celebrated on 21 July each year.
@@ -66,6 +69,13 @@ class Belgium extends AbstractProvider
             'fr' => 'Fête nationale',
             'en' => 'Belgian National Day',
             'nl' => 'nationale feestdag',
-        ], new DateTime("$this->year-7-21", DateTimeZoneFactory::getDateTimeZone($this->timezone)), $this->locale));
+        ], new \DateTime("{$this->year}-7-21", DateTimeZoneFactory::getDateTimeZone($this->timezone)), $this->locale));
+    }
+
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Belgium',
+        ];
     }
 }

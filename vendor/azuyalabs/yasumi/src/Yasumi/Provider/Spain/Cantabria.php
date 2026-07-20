@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Spain;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -28,14 +31,14 @@ use Yasumi\Provider\Spain;
  * (provinces of León, Palencia and Burgos), on the west by the Principality of Asturias, and on the north by the
  * Cantabrian Sea (Bay of Biscay).
  *
- * @link https://en.wikipedia.org/wiki/Cantabria
+ * @see https://en.wikipedia.org/wiki/Cantabria
  */
 class Cantabria extends Spain
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'ES-CB';
@@ -43,7 +46,6 @@ class Cantabria extends Spain
     /**
      * Initialize holidays for Cantabria (Spain).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -71,20 +73,19 @@ class Cantabria extends Spain
      * "Special Regional Interest" in 1983. Following the establishment of the autonomous community of Cantabria in
      * 1982, the event became known as the Day of Cantabria.
      *
-     * @link https://www.timeanddate.com/holidays/spain/cantabria-day
+     * @see https://www.timeanddate.com/holidays/spain/cantabria-day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateCantabriaDay(): void
+    protected function calculateCantabriaDay(): void
     {
         if ($this->year >= 1967) {
             $this->addHoliday(new Holiday(
                 'cantabriaDay',
                 ['es' => 'Día de Cantabria'],
-                new DateTime("second sunday of august $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("second sunday of august {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

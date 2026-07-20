@@ -1,14 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
@@ -22,7 +26,8 @@ use Yasumi\Holiday;
  */
 class Estonia extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     public const DECLARATION_OF_INDEPENDENCE_YEAR = 1918;
 
@@ -31,7 +36,7 @@ class Estonia extends AbstractProvider
     public const RESTORATION_OF_INDEPENDENCE_YEAR = 1991;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'EE';
@@ -61,11 +66,19 @@ class Estonia extends AbstractProvider
         $this->addHoliday($this->secondChristmasDay($this->year, $this->timezone, $this->locale));
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Estonia',
+            'https://et.wikipedia.org/wiki/Eesti_riigip%C3%BChad',
+        ];
+    }
+
     /**
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addIndependenceDay(): void
+    protected function addIndependenceDay(): void
     {
         if ($this->year >= self::DECLARATION_OF_INDEPENDENCE_YEAR) {
             $this->addHoliday(new Holiday('independenceDay', [
@@ -79,7 +92,7 @@ class Estonia extends AbstractProvider
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addVictoryDay(): void
+    protected function addVictoryDay(): void
     {
         if ($this->year >= self::VICTORY_DAY_START_YEAR) {
             $this->addHoliday(new Holiday('victoryDay', [
@@ -93,12 +106,12 @@ class Estonia extends AbstractProvider
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addRestorationOfIndependenceDay(): void
+    protected function addRestorationOfIndependenceDay(): void
     {
         if ($this->year >= self::RESTORATION_OF_INDEPENDENCE_YEAR) {
             $this->addHoliday(new Holiday('restorationOfIndependenceDay', [
                 'en' => 'Day of Restoration of Independence',
-                'et' => 'Tasiseseisvumispäev',
+                'et' => 'Taasiseseisvumispäev',
             ], new \DateTime("{$this->year}-08-20", new \DateTimeZone($this->timezone))));
         }
     }

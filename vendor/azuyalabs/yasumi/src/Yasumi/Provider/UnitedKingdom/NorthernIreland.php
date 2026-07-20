@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\UnitedKingdom;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\DateTimeZoneFactory;
@@ -27,12 +30,12 @@ use Yasumi\SubstituteHoliday;
  * (5,460 sq mi), and has a population of 1,885,400. Belfast, Northern Ireland's capital and largest city,
  * is the 12th largest city in the United Kingdom.
  *
- * @link https://en.wikipedia.org/wiki/Northern_Ireland
+ * @see https://en.wikipedia.org/wiki/Northern_Ireland
  */
 class NorthernIreland extends UnitedKingdom
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'GB-NIR';
@@ -40,7 +43,6 @@ class NorthernIreland extends UnitedKingdom
     /**
      * Initialize holidays for Northern Ireland (United Kingdom).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -49,8 +51,16 @@ class NorthernIreland extends UnitedKingdom
     {
         parent::initialize();
 
+        $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale, Holiday::TYPE_BANK));
         $this->calculateStPatricksDay();
         $this->calculateBattleOfTheBoyne();
+    }
+
+    public function getSources(): array
+    {
+        return [
+            'https://nextbankholidays.co.uk/guides/battle-of-the-boyne/',
+        ];
     }
 
     /**
@@ -62,15 +72,13 @@ class NorthernIreland extends UnitedKingdom
      * of Ireland, Northern Ireland, the Canadian province of Newfoundland and Labrador, and the British Overseas
      * Territory of Montserrat.
      *
-     * @link https://en.wikipedia.org/wiki/Saint_Patrick%27s_Day
+     * @see https://en.wikipedia.org/wiki/Saint_Patrick%27s_Day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateStPatricksDay(): void
+    protected function calculateStPatricksDay(): void
     {
         if ($this->year < 1971) {
             return;
@@ -79,7 +87,7 @@ class NorthernIreland extends UnitedKingdom
         $holiday = new Holiday(
             'stPatricksDay',
             ['en' => 'St. Patrick’s Day'],
-            new DateTime($this->year . '-3-17', DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-3-17", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_BANK
         );
@@ -108,15 +116,14 @@ class NorthernIreland extends UnitedKingdom
      * and victory of Protestant King William of Orange over Catholic king James II at the Battle of the
      * Boyne (1690), which began the Protestant Ascendancy in Ireland.
      *
-     * @link https://en.wikipedia.org/wiki/The_Twelfth
+     * @see https://en.wikipedia.org/wiki/The_Twelfth
+     * @see https://nextbankholidays.co.uk/guides/battle-of-the-boyne/
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateBattleOfTheBoyne(): void
+    protected function calculateBattleOfTheBoyne(): void
     {
         if ($this->year < 1926) {
             return;
@@ -125,7 +132,7 @@ class NorthernIreland extends UnitedKingdom
         $holiday = new Holiday(
             'battleOfTheBoyne',
             ['en' => 'Battle of the Boyne'],
-            new DateTime($this->year . '-7-12', DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-7-12", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_BANK
         );

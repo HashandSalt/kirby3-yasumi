@@ -1,20 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateInterval;
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -23,10 +25,11 @@ use Yasumi\Holiday;
  */
 class NewZealand extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'NZ';
@@ -34,7 +37,6 @@ class NewZealand extends AbstractProvider
     /**
      * Initialize holidays for New Zealand.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -48,6 +50,7 @@ class NewZealand extends AbstractProvider
         $this->calculateWaitangiDay();
         $this->calculateAnzacDay();
         $this->calculateQueensBirthday();
+        $this->calculateMatariki();
         $this->calculateLabourDay();
 
         // Add Christian holidays
@@ -56,38 +59,44 @@ class NewZealand extends AbstractProvider
         $this->calculateChristmasHolidays();
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_New_Zealand',
+        ];
+    }
+
     /**
      * Holidays associated with the start of the modern Gregorian calendar.
      *
      * New Zealanders celebrate New Years Day and The Day After New Years Day,
      * if either of these holidays occur on a weekend, the dates need to be adjusted.
      *
-     * @link https://en.wikipedia.org/wiki/Public_holidays_in_New_Zealand#Statutory_holidays
-     * @link https://www.timeanddate.com/holidays/new-zealand/new-year-day
-     * @link https://www.timeanddate.com/holidays/new-zealand/day-after-new-years-day
-     * @link https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
+     * @see https://en.wikipedia.org/wiki/Public_holidays_in_New_Zealand#Statutory_holidays
+     * @see https://www.timeanddate.com/holidays/new-zealand/new-year-day
+     * @see https://www.timeanddate.com/holidays/new-zealand/day-after-new-years-day
+     * @see https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateNewYearHolidays(): void
+    protected function calculateNewYearHolidays(): void
     {
-        $newYearsDay = new DateTime("$this->year-01-01", DateTimeZoneFactory::getDateTimeZone($this->timezone));
-        $dayAfterNewYearsDay = new DateTime("$this->year-01-02", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $newYearsDay = new \DateTime("{$this->year}-01-01", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $dayAfterNewYearsDay = new \DateTime("{$this->year}-01-02", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
         switch ($newYearsDay->format('w')) {
             case 0:
-                $newYearsDay->add(new DateInterval('P1D'));
-                $dayAfterNewYearsDay->add(new DateInterval('P1D'));
+                $newYearsDay->add(new \DateInterval('P1D'));
+                $dayAfterNewYearsDay->add(new \DateInterval('P1D'));
                 break;
             case 5:
-                $dayAfterNewYearsDay->add(new DateInterval('P2D'));
+                $dayAfterNewYearsDay->add(new \DateInterval('P2D'));
                 break;
             case 6:
-                $newYearsDay->add(new DateInterval('P2D'));
-                $dayAfterNewYearsDay->add(new DateInterval('P2D'));
+                $newYearsDay->add(new \DateInterval('P2D'));
+                $dayAfterNewYearsDay->add(new \DateInterval('P2D'));
                 break;
         }
 
@@ -104,23 +113,22 @@ class NewZealand extends AbstractProvider
      * on that date in 1840. In recent legislation, if 6 February falls on a Saturday or Sunday,
      * the Monday that immediately follows becomes a public holiday.
      *
-     * @link https://en.wikipedia.org/wiki/Waitangi_Day
-     * @link https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
+     * @see https://en.wikipedia.org/wiki/Waitangi_Day
+     * @see https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateWaitangiDay(): void
+    protected function calculateWaitangiDay(): void
     {
         if ($this->year < 1974) {
             return;
         }
 
-        $date = new DateTime("$this->year-02-6", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("{$this->year}-02-6", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
-        if ($this->year >= 2015 && !$this->isWorkingDay($date)) {
+        if ($this->year >= 2015 && ! $this->isWorkingDay($date)) {
             $date->modify('next monday');
         }
 
@@ -134,23 +142,22 @@ class NewZealand extends AbstractProvider
      * and New Zealanders "who served and died in all wars, conflicts, and peacekeeping operations"
      * Observed on 25 April each year.
      *
-     * @link https://en.wikipedia.org/wiki/Anzac_Day
-     * @link https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
+     * @see https://en.wikipedia.org/wiki/Anzac_Day
+     * @see https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateAnzacDay(): void
+    protected function calculateAnzacDay(): void
     {
         if ($this->year < 1921) {
             return;
         }
 
-        $date = new DateTime("$this->year-04-25", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("{$this->year}-04-25", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
-        if ($this->year >= 2015 && !$this->isWorkingDay($date)) {
+        if ($this->year >= 2015 && ! $this->isWorkingDay($date)) {
             $date->modify('next monday');
         }
 
@@ -168,14 +175,13 @@ class NewZealand extends AbstractProvider
      *
      * Her actual birthday is on April 21, but it's celebrated as a public holiday on the first Monday of June.
      *
-     * @link https://www.timeanddate.com/holidays/new-zealand/queen-birthday
+     * @see https://www.timeanddate.com/holidays/new-zealand/queen-birthday
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateQueensBirthday(): void
+    protected function calculateQueensBirthday(): void
     {
         if ($this->year < 1952) {
             return;
@@ -184,9 +190,74 @@ class NewZealand extends AbstractProvider
         $this->addHoliday(new Holiday(
             'queensBirthday',
             [],
-            new DateTime("first monday of june $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("first monday of june {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
+    }
+
+    /**
+     * Matariki – te Mātahi o te Tau
+     * Matariki – the Māori New Year
+     *
+     * The Matariki public holiday is based on the winter rising of the Matariki cluster in the early
+     * morning sky during the Tangaroa period of the lunar month of Pipiri.
+     *
+     * The dates are predetermined by the Matariki Advisory Committee, currently for the years 2022-2052 inclusive
+     *
+     * @see https://www.tepapa.govt.nz/discover-collections/read-watch-play/matariki-maori-new-year/dates-for-matariki-public-holiday
+     * @see https://www.mbie.govt.nz/business-and-employment/employment-and-skills/employment-legislation-reviews/matariki/matariki-public-holiday
+     *
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     */
+    protected function calculateMatariki(): void
+    {
+        if ($this->year < 2022 || 2052 < $this->year) {
+            return;
+        }
+
+        $matarikiDates = [
+            2022 => ['month' => 6, 'day' => 24],
+            2023 => ['month' => 7, 'day' => 14],
+            2024 => ['month' => 6, 'day' => 28],
+            2025 => ['month' => 6, 'day' => 20],
+            2026 => ['month' => 7, 'day' => 10],
+            2027 => ['month' => 6, 'day' => 25],
+            2028 => ['month' => 7, 'day' => 14],
+            2029 => ['month' => 7, 'day' => 6],
+            2030 => ['month' => 6, 'day' => 21],
+            2031 => ['month' => 7, 'day' => 11],
+            2032 => ['month' => 7, 'day' => 2],
+            2033 => ['month' => 6, 'day' => 24],
+            2034 => ['month' => 7, 'day' => 7],
+            2035 => ['month' => 6, 'day' => 29],
+            2036 => ['month' => 7, 'day' => 18],
+            2037 => ['month' => 7, 'day' => 10],
+            2038 => ['month' => 6, 'day' => 25],
+            2039 => ['month' => 7, 'day' => 15],
+            2040 => ['month' => 7, 'day' => 6],
+            2041 => ['month' => 7, 'day' => 19],
+            2042 => ['month' => 7, 'day' => 11],
+            2043 => ['month' => 7, 'day' => 3],
+            2044 => ['month' => 6, 'day' => 24],
+            2045 => ['month' => 7, 'day' => 7],
+            2046 => ['month' => 6, 'day' => 29],
+            2047 => ['month' => 7, 'day' => 19],
+            2048 => ['month' => 7, 'day' => 3],
+            2049 => ['month' => 6, 'day' => 25],
+            2050 => ['month' => 7, 'day' => 15],
+            2051 => ['month' => 6, 'day' => 30],
+            2052 => ['month' => 6, 'day' => 21],
+        ];
+
+        $date = new \DateTime(
+            sprintf('%04d-%02d-%02d', $this->year, $matarikiDates[$this->year]['month'],
+                $matarikiDates[$this->year]['day']),
+            DateTimeZoneFactory::getDateTimeZone($this->timezone)
+        );
+
+        $this->addHoliday(new Holiday('matariki', [], $date, $this->locale));
     }
 
     /**
@@ -201,21 +272,20 @@ class NewZealand extends AbstractProvider
      * second Wednesday in October in 1900. The holiday was moved to the fourth Monday of October in 1910
      * has remained on this date since then.
      *
-     * @link https://www.timeanddate.com/holidays/new-zealand/labour-day
+     * @see https://www.timeanddate.com/holidays/new-zealand/labour-day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateLabourDay(): void
+    protected function calculateLabourDay(): void
     {
         if ($this->year < 1900) {
             return;
         }
 
-        $date = new DateTime(
-            ($this->year < 1910 ? 'second wednesday of october' : 'fourth monday of october') . " $this->year",
+        $date = new \DateTime(
+            ($this->year < 1910 ? 'second wednesday of october' : 'fourth monday of october') . " {$this->year}",
             DateTimeZoneFactory::getDateTimeZone($this->timezone)
         );
 
@@ -228,30 +298,29 @@ class NewZealand extends AbstractProvider
      * Christmas day, and Boxing day are public holidays in New Zealand,
      * they are subject to mondayisation rules.
      *
-     * @link https://www.timeanddate.com/holidays/new-zealand/boxing-day
-     * @link https://www.timeanddate.com/holidays/new-zealand/christmas-day
-     * @link https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
+     * @see https://www.timeanddate.com/holidays/new-zealand/boxing-day
+     * @see https://www.timeanddate.com/holidays/new-zealand/christmas-day
+     * @see https://www.employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-falling-on-a-weekend/
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateChristmasHolidays(): void
+    protected function calculateChristmasHolidays(): void
     {
-        $christmasDay = new DateTime("$this->year-12-25", DateTimeZoneFactory::getDateTimeZone($this->timezone));
-        $boxingDay = new DateTime("$this->year-12-26", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $christmasDay = new \DateTime("{$this->year}-12-25", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $boxingDay = new \DateTime("{$this->year}-12-26", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
         switch ($christmasDay->format('w')) {
             case 0:
-                $christmasDay->add(new DateInterval('P2D'));
+                $christmasDay->add(new \DateInterval('P2D'));
                 break;
             case 5:
-                $boxingDay->add(new DateInterval('P2D'));
+                $boxingDay->add(new \DateInterval('P2D'));
                 break;
             case 6:
-                $christmasDay->add(new DateInterval('P2D'));
-                $boxingDay->add(new DateInterval('P2D'));
+                $christmasDay->add(new \DateInterval('P2D'));
+                $boxingDay->add(new \DateInterval('P2D'));
                 break;
         }
 

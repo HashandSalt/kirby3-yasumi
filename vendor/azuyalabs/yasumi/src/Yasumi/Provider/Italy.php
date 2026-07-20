@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -22,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Italy extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'IT';
@@ -33,7 +37,6 @@ class Italy extends AbstractProvider
     /**
      * Initialize holidays for Italy.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -61,6 +64,14 @@ class Italy extends AbstractProvider
         $this->calculateRepublicDay();
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Italy',
+            'https://it.wikipedia.org/wiki/Festivit%C3%A0_in_Italia',
+        ];
+    }
+
     /**
      * Liberation Day.
      *
@@ -70,21 +81,19 @@ class Italy extends AbstractProvider
      * Nazi occupation of the country. On May 27, 1949, bill 260 made the anniversary a permanent, annual national
      * holiday.
      *
-     * @link https://en.wikipedia.org/wiki/Liberation_Day_%28Italy%29
+     * @see https://en.wikipedia.org/wiki/Liberation_Day_%28Italy%29
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateLiberationDay(): void
+    protected function calculateLiberationDay(): void
     {
         if ($this->year >= 1949) {
             $this->addHoliday(new Holiday(
                 'liberationDay',
                 ['it' => 'Festa della Liberazione'],
-                new DateTime("$this->year-4-25", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-4-25", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }
@@ -98,21 +107,19 @@ class Italy extends AbstractProvider
      * in 1946, in which the Italian people were called to the polls to decide on the form of government, following
      * the Second World War and the fall of Fascism.
      *
-     * @link https://en.wikipedia.org/wiki/Festa_della_Repubblica
+     * @see https://en.wikipedia.org/wiki/Festa_della_Repubblica
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateRepublicDay(): void
+    protected function calculateRepublicDay(): void
     {
         if ($this->year >= 1946) {
             $this->addHoliday(new Holiday(
                 'republicDay',
                 ['it' => 'Festa della Repubblica'],
-                new DateTime("$this->year-6-2", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-6-2", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -22,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Norway extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'NO';
@@ -33,7 +37,6 @@ class Norway extends AbstractProvider
     /**
      * Initialize holidays for Norway.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -61,8 +64,16 @@ class Norway extends AbstractProvider
         $this->calculateConstitutionDay();
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Norway',
+            'https://no.wikipedia.org/wiki/Helligdager_i_Norge',
+        ];
+    }
+
     /**
-     * Constitution Day
+     * Constitution Day.
      *
      * Norway’s Constitution Day is May 17 and commemorates the signing of Norways's constitution at Eidsvoll on
      * May 17, 1814. It’s usually referred to as Grunnlovsdag(en) ((The) Constitution Day), syttende mai (May 17) or
@@ -72,20 +83,19 @@ class Norway extends AbstractProvider
      * coalition with Sweden, proceeded by nearly 400 years of Danish rule. The Norwegian Parliament, known as
      * Stortinget, held the first May 17 celebrations in 1836, and since it has been regarded as Norway’s National Day.
      *
-     * @link https://en.wikipedia.org/wiki/Norwegian_Constitution_Day
+     * @see https://en.wikipedia.org/wiki/Norwegian_Constitution_Day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateConstitutionDay(): void
+    protected function calculateConstitutionDay(): void
     {
         if ($this->year >= 1836) {
             $this->addHoliday(new Holiday(
                 'constitutionDay',
                 ['nb' => 'grunnlovsdagen'],
-                new DateTime("$this->year-5-17", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-5-17", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

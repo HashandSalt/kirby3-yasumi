@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Spain;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -28,14 +31,14 @@ use Yasumi\Provider\Spain;
  * Spain's 17 autonomous communities and are among the outermost regions of the European Union proper. The main islands
  * are (from largest to smallest) Tenerife, Fuerteventura, Gran Canaria, Lanzarote, La Palma, La Gomera and El Hierro.
  *
- * @link https://en.wikipedia.org/wiki/Canary_Islands
+ * @see https://en.wikipedia.org/wiki/Canary_Islands
  */
 class CanaryIslands extends Spain
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'ES-CN';
@@ -43,7 +46,6 @@ class CanaryIslands extends Spain
     /**
      * Initialize holidays for Canary Islands (Spain).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -67,20 +69,19 @@ class CanaryIslands extends Spain
      * year. This event celebrates the islands' culture and people. It also marks the anniversary of the autonomous
      * Canary Islands Parliament's first session, which was on May 30, 1983.
      *
-     * @link https://www.timeanddate.com/holidays/spain/canaries-day
+     * @see https://www.timeanddate.com/holidays/spain/canaries-day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateCanaryIslandsDay(): void
+    protected function calculateCanaryIslandsDay(): void
     {
         if ($this->year >= 1984) {
             $this->addHoliday(new Holiday(
                 'canaryIslandsDay',
                 ['es' => 'Día de las Canarias'],
-                new DateTime("$this->year-5-30", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-5-30", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

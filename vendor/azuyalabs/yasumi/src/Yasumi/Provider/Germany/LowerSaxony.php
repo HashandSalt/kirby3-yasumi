@@ -1,18 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Germany;
 
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Provider\Germany;
 
@@ -24,12 +28,12 @@ use Yasumi\Provider\Germany;
  * of Germany. In rural areas Northern Low Saxon, a dialect of Low German, and Saterland Frisian, a variety of Frisian,
  * are still spoken, but the number of speakers is declining.
  *
- * @link https://en.wikipedia.org/wiki/Lower_Saxony
+ * @see https://en.wikipedia.org/wiki/Lower_Saxony
  */
 class LowerSaxony extends Germany
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'DE-NI';
@@ -37,7 +41,6 @@ class LowerSaxony extends Germany
     /**
      * Initialize holidays for Lower Saxony (Germany).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -54,14 +57,13 @@ class LowerSaxony extends Germany
      * For the German state of Lower Saxony, Reformation Day is celebrated since 2018.
      * Note: In 2017 all German states will celebrate Reformation Day for its 500th anniversary.
      *
-     * @link https://www.zeit.de/gesellschaft/zeitgeschehen/2018-06/reformationstag-niedersachsen-neuer-feiertag
+     * @see https://www.zeit.de/gesellschaft/zeitgeschehen/2018-06/reformationstag-niedersachsen-neuer-feiertag
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateReformationDay(): void
+    protected function calculateReformationDay(): void
     {
         if ($this->year < 2018) {
             return;

@@ -1,19 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Filters;
-
-use Iterator;
 
 /**
  * OnFilter is a class used for filtering holidays based on a given date.
@@ -21,38 +23,30 @@ use Iterator;
  * Filters for all holidays that happen on the given date.
  *
  * Note: this class can be used separately, however is implemented by the AbstractProvider::on method.
- *
- * @package Yasumi\Filters
  */
 class OnFilter extends AbstractFilter
 {
-    /**
-     * @var string date to check for holidays
-     */
-    private $date;
+    private const DATE_FORMAT = 'Y-m-d';
 
+    /** date to check for holidays */
+    private readonly string $date;
 
     /**
-     * Construct the On FilterIterator Object
+     * Construct the On FilterIterator Object.
      *
-     * @param Iterator $iterator Iterator object of the Holidays Provider
-     * @param \DateTimeInterface $date Start date of the time frame to check against
+     * @param \Iterator<string, \Yasumi\Holiday> $iterator Iterator object of the Holidays Provider
+     * @param \DateTimeInterface                 $date     Start date of the time frame to check against
      */
-
     public function __construct(
-        Iterator $iterator,
-        \DateTimeInterface $date
+        \Iterator $iterator,
+        \DateTimeInterface $date,
     ) {
         parent::__construct($iterator);
-        $this->date = $date->format('Y-m-d');
+        $this->date = $date->format(self::DATE_FORMAT);
     }
 
-    /**
-     * @return bool Check whether the current element of the iterator is acceptable
-     */
     public function accept(): bool
     {
-        $holiday = $this->getInnerIterator()->current()->format('Y-m-d');
-        return $holiday === $this->date;
+        return $this->getInnerIterator()->current()->format(self::DATE_FORMAT) === $this->date;
     }
 }

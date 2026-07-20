@@ -1,14 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
@@ -22,14 +26,17 @@ use Yasumi\Holiday;
  */
 class Latvia extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     public const RESTORATION_OF_INDEPENDENCE_YEAR = 1990;
+
+    public const MOTHERS_DAY_YEAR = 1992;
 
     public const PROCLAMATION_OF_INDEPENDENCE_YEAR = 1918;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'LV';
@@ -49,8 +56,10 @@ class Latvia extends AbstractProvider
         $this->addHoliday($this->goodFriday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->easter($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale));
+        $this->addHoliday($this->pentecost($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->internationalWorkersDay($this->year, $this->timezone, $this->locale));
         $this->addRestorationOfIndependenceDay();
+        $this->addMothersDay();
         $this->addMidsummerEveDay();
         $this->addHoliday($this->stJohnsDay($this->year, $this->timezone, $this->locale));
         $this->addProclamationDay();
@@ -60,6 +69,16 @@ class Latvia extends AbstractProvider
         $this->addHoliday($this->newYearsEve($this->year, $this->timezone, $this->locale));
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Latvia',
+            'https://lt.wikipedia.org/wiki/S%C4%85ra%C5%A1as:Latvijos_%C5%A1vent%C4%97s',
+            'https://www.mfa.gov.lv/en/11-national-hollidays-and-remembrance-days',
+            'https://likumi.lv/ta/id/72608-par-svetku-atceres-un-atzimejamam-dienam',
+        ];
+    }
+
     /**
      * On 4 May 1990. Latvia proclaimed its independence from the USSR, and restoration of the Republic of Latvia.
      * If the day is on the weekend the next Monday is a holiday.
@@ -67,12 +86,12 @@ class Latvia extends AbstractProvider
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addRestorationOfIndependenceDay(): void
+    protected function addRestorationOfIndependenceDay(): void
     {
         if ($this->year >= self::RESTORATION_OF_INDEPENDENCE_YEAR) {
             $date = new \DateTime("{$this->year}-05-04", new \DateTimeZone($this->timezone));
 
-            if (!$this->isWorkingDay($date)) {
+            if (! $this->isWorkingDay($date)) {
                 $date->modify('next monday');
             }
 
@@ -84,10 +103,20 @@ class Latvia extends AbstractProvider
     }
 
     /**
+     * Mother's day is celebrated on the 2nd Sunday of May.
+     */
+    protected function addMothersDay(): void
+    {
+        if ($this->year >= self::MOTHERS_DAY_YEAR) {
+            $this->addHoliday($this->mothersDay($this->year, $this->timezone, $this->locale));
+        }
+    }
+
+    /**
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addMidsummerEveDay(): void
+    protected function addMidsummerEveDay(): void
     {
         $this->addHoliday(new Holiday('midsummerEveDay', [
             'en' => 'Midsummer Eve',
@@ -102,12 +131,12 @@ class Latvia extends AbstractProvider
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function addProclamationDay(): void
+    protected function addProclamationDay(): void
     {
         if ($this->year >= self::PROCLAMATION_OF_INDEPENDENCE_YEAR) {
             $date = new \DateTime("{$this->year}-11-18", new \DateTimeZone($this->timezone));
 
-            if (!$this->isWorkingDay($date)) {
+            if (! $this->isWorkingDay($date)) {
                 $date->modify('next monday');
             }
 

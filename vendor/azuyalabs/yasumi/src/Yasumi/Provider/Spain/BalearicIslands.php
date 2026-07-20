@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Spain;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -27,14 +30,14 @@ use Yasumi\Provider\Spain;
  * Iberian Peninsula. The four largest islands are Majorca, Minorca, Ibiza and Formentera. There are many minor islands
  * and islets in close proximity to the larger islands, including Cabrera, Dragonera and S'Espalmador.
  *
- * @link https://en.wikipedia.org/wiki/Balearic_Islands
+ * @see https://en.wikipedia.org/wiki/Balearic_Islands
  */
 class BalearicIslands extends Spain
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'ES-IB';
@@ -42,7 +45,6 @@ class BalearicIslands extends Spain
     /**
      * Initialize holidays for Balearic Islands (Spain).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -68,14 +70,13 @@ class BalearicIslands extends Spain
      * which are part of Spain, on March 1 each year. This date commemorates when the Balearic Islands' Statute of
      * Autonomy came into effect on March 1, 1983.
      *
-     * @link https://www.timeanddate.com/holidays/spain/the-balearic-islands-day
+     * @see https://www.timeanddate.com/holidays/spain/the-balearic-islands-day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateBalearicIslandsDay(): void
+    protected function calculateBalearicIslandsDay(): void
     {
         if ($this->year >= 1983) {
             $this->addHoliday(new Holiday(
@@ -84,7 +85,7 @@ class BalearicIslands extends Spain
                     'ca' => 'Diada de les Illes Balears',
                     'es' => 'Día de les Illes Balears',
                 ],
-                new DateTime("$this->year-3-1", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-3-1", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -22,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Finland extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'FI';
@@ -33,7 +37,6 @@ class Finland extends AbstractProvider
     /**
      * Initialize holidays for Finland.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -62,6 +65,14 @@ class Finland extends AbstractProvider
         $this->calculateIndependenceDay();
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Finland',
+            'https://fi.wikipedia.org/wiki/Suomen_juhlap%C3%A4iv%C3%A4t',
+        ];
+    }
+
     /**
      * St. John's Day / Midsummer.
      *
@@ -75,21 +86,20 @@ class Finland extends AbstractProvider
      * always on June 24. Many of the celebrations of midsummer take place on midsummer eve, when many workplaces are
      * closed and shops must close their doors at noon.
      *
-     * @link https://en.wikipedia.org/wiki/Midsummer#Finland
+     * @see https://en.wikipedia.org/wiki/Midsummer#Finland
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateStJohnsDay(): void
+    protected function calculateStJohnsDay(): void
     {
-        $stJohnsDay = $this->year < 1955 ? "$this->year-6-24" : "$this->year-6-20 this saturday";
+        $stJohnsDay = $this->year < 1955 ? "{$this->year}-6-24" : "{$this->year}-6-20 this saturday";
 
         $this->addHoliday(new Holiday(
             'stJohnsDay',
             [],
-            new DateTime($stJohnsDay, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime($stJohnsDay, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }
@@ -108,26 +118,25 @@ class Finland extends AbstractProvider
      * the dead. In the Swedish and Finnish calendar, the observance takes place on the Saturday between 31 October and
      * 6 November. In many Lutheran Churches, it is moved to the first Sunday of November.
      *
-     * @link https://en.wikipedia.org/wiki/All_Saints%27_Day
-     * @link https://fi.wikipedia.org/wiki/Pyh%C3%A4inp%C3%A4iv%C3%A4
+     * @see https://en.wikipedia.org/wiki/All_Saints%27_Day
+     * @see https://fi.wikipedia.org/wiki/Pyh%C3%A4inp%C3%A4iv%C3%A4
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateAllSaintsDay(): void
+    protected function calculateAllSaintsDay(): void
     {
         $this->addHoliday(new Holiday(
             'allSaintsDay',
             [],
-            new DateTime("$this->year-10-31 this saturday", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-10-31 this saturday", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }
 
     /**
-     * Independence Day
+     * Independence Day.
      *
      * Finland's Independence Day (Finnish: itsenäisyyspäivä, Swedish: självständighetsdagen) is a national public
      * holiday, and a flag day, held on 6 December to celebrate Finland's declaration of independence from the Russian
@@ -137,20 +146,19 @@ class Finland extends AbstractProvider
      * some parts of Finland was only a minor holiday compared to 16 May, the Whites' day of celebration for prevailing
      * in the Finnish Civil War.
      *
-     * @link https://en.wikipedia.org/wiki/Independence_Day_(Finland)
+     * @see https://en.wikipedia.org/wiki/Independence_Day_(Finland)
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateIndependenceDay(): void
+    protected function calculateIndependenceDay(): void
     {
         if ($this->year >= 1917) {
             $this->addHoliday(new Holiday(
                 'independenceDay',
                 ['fi' => 'Itsenäisyyspäivä'],
-                new DateTime("$this->year-12-6", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-12-6", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

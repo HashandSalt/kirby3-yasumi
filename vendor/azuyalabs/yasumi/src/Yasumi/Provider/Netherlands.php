@@ -1,20 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateInterval;
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -23,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Netherlands extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'NL';
@@ -34,7 +37,6 @@ class Netherlands extends AbstractProvider
     /**
      * Initialize holidays for the Netherlands.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -76,14 +78,21 @@ class Netherlands extends AbstractProvider
 
         // Calculate other holidays
         $this->calculateCarnival();
-        $this->calculateWinterTime();
-        $this->calculateSummerTime();
         $this->calculateStNicholasDay();
         $this->calculateHalloween();
         $this->calculatePrincesDay();
         $this->calculateQueensday();
         $this->calculateKingsday();
         $this->calculateCommemorationLiberationDay();
+        $this->addEquivalentDays();
+    }
+
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_the_Netherlands',
+            'https://nl.wikipedia.org/wiki/Feestdagen_in_Nederland',
+        ];
     }
 
     /**
@@ -95,119 +104,77 @@ class Netherlands extends AbstractProvider
      *
      * @throws \Exception
      */
-    private function calculateCarnival(): void
+    protected function calculateCarnival(): void
     {
         $easter = $this->calculateEaster($this->year, $this->timezone);
-        $carnivalDay1 = clone $easter;
-        $this->addHoliday(new Holiday(
-            'carnivalDay',
-            ['en' => 'Carnival', 'nl' => 'Carnaval'],
-            $carnivalDay1->sub(new DateInterval('P49D')),
-            $this->locale,
-            Holiday::TYPE_OBSERVANCE
-        ));
 
-        /**
-         * Second Day of Carnival.
-         */
-        $carnivalDay2 = clone $easter;
-        $this->addHoliday(new Holiday(
-            'secondCarnivalDay',
-            ['en' => 'Carnival', 'nl' => 'Carnaval'],
-            $carnivalDay2->sub(new DateInterval('P48D')),
-            $this->locale,
-            Holiday::TYPE_OBSERVANCE
-        ));
+        $intervals = [
+            'carnivalDay' => 'P49D',
+            'secondCarnivalDay' => 'P48D',
+            'thirdCarnivalDay' => 'P47D',
+        ];
 
-        /**
-         * Third Day of Carnival.
-         */
-        $carnivalDay3 = clone $easter;
-        $this->addHoliday(new Holiday(
-            'thirdCarnivalDay',
-            ['en' => 'Carnival', 'nl' => 'Carnaval'],
-            $carnivalDay3->sub(new DateInterval('P47D')),
-            $this->locale,
-            Holiday::TYPE_OBSERVANCE
-        ));
-    }
+        foreach ($intervals as $name => $interval) {
+            $date = (clone $easter)->sub(new \DateInterval($interval));
 
-    /**
-     * Winter Time.
-     *
-     * The beginning of winter time. Winter time is also known as standard time.
-     *
-     * @throws \Exception
-     * @see \Yasumi\Provider\CommonHolidays::winterTime()
-     */
-    private function calculateWinterTime(): void
-    {
-        $winterTime = $this->winterTime($this->year, $this->timezone, $this->locale);
-        if ($winterTime instanceof Holiday) {
-            $this->addHoliday($winterTime);
+            if (! $date instanceof \DateTime) {
+                throw new \RuntimeException(sprintf('unable to perform a date subtraction for %s:%s', self::class, $name));
+            }
+
+            $this->addHoliday(new Holiday(
+                $name,
+                ['en' => 'Carnival', 'nl' => 'Carnaval'],
+                $date,
+                $this->locale,
+                Holiday::TYPE_OBSERVANCE
+            ));
         }
     }
 
     /**
-     * Summer Time.
-     *
-     * The beginning of summer time. Summer time is also known as day lights saving time.
-     *
-     * @throws \Exception
-     * @see \Yasumi\Provider\CommonHolidays::summerTime()
-     */
-    private function calculateSummerTime(): void
-    {
-        $summerTime = $this->summerTime($this->year, $this->timezone, $this->locale);
-        if ($summerTime instanceof Holiday) {
-            $this->addHoliday($summerTime);
-        }
-    }
-
-    /**
-     * St. Nicholas' Day
+     * St. Nicholas' Day.
      *
      * The feast of Sinterklaas celebrates the name day of Saint Nicholas on 6 December.
      * The feast is celebrated annually with the giving of gifts on St. Nicholas' Eve (5 December) in the Netherlands
      * and on the morning of 6 December, Saint Nicholas Day, in Belgium, Luxembourg and northern France
      * (French Flanders, Lorraine and Artois).
      *
-     * @link https://en.wikipedia.org/wiki/Sinterklaas
+     * @see https://en.wikipedia.org/wiki/Sinterklaas
      *
      * @throws \Exception
      */
-    private function calculateStNicholasDay(): void
+    protected function calculateStNicholasDay(): void
     {
-        /**
+        /*
          * St. Nicholas' Day
          */
         $this->addHoliday(new Holiday(
             'stNicholasDay',
             ['en' => 'St. Nicholas’ Day', 'nl' => 'Sinterklaas'],
-            new DateTime("$this->year-12-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-12-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OBSERVANCE
         ));
     }
 
     /**
-     * Halloween
+     * Halloween.
      *
      * Halloween or Hallowe'en (a contraction of Hallows' Even or Hallows' Evening), is a celebration observed in
      * several countries on 31 October, the eve of the Western Christian feast of All Hallows' Day.
      * It begins the three-day observance of Allhallowtide, the time in the liturgical year dedicated to remembering the
      * dead, including saints (hallows), martyrs, and all the faithful departed.
      *
-     * @link https://en.wikipedia.org/wiki/Halloween
+     * @see https://en.wikipedia.org/wiki/Halloween
      *
      * @throws \Exception
      */
-    private function calculateHalloween(): void
+    protected function calculateHalloween(): void
     {
         $this->addHoliday(new Holiday(
             'halloween',
             ['en' => 'Halloween', 'nl' => 'Halloween'],
-            new DateTime("$this->year-10-31", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-10-31", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OBSERVANCE
         ));
@@ -221,12 +188,12 @@ class Netherlands extends AbstractProvider
      *
      * @throws \Exception
      */
-    private function calculatePrincesDay(): void
+    protected function calculatePrincesDay(): void
     {
         $this->addHoliday(new Holiday(
             'princesDay',
             ['en' => 'Prince’s Day', 'nl' => 'Prinsjesdag'],
-            new DateTime("third tuesday of september $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("third tuesday of september {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OTHER
         ));
@@ -241,17 +208,17 @@ class Netherlands extends AbstractProvider
      *
      * @throws \Exception
      */
-    private function calculateQueensday(): void
+    protected function calculateQueensday(): void
     {
         if ($this->year >= 1891 && $this->year <= 2013) {
-            $date = new DateTime("$this->year-4-30", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+            $date = new \DateTime("{$this->year}-4-30", DateTimeZoneFactory::getDateTimeZone($this->timezone));
             if ($this->year <= 1948) {
-                $date = new DateTime("$this->year-8-31", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+                $date = new \DateTime("{$this->year}-8-31", DateTimeZoneFactory::getDateTimeZone($this->timezone));
             }
 
             // Determine substitution day
             if (0 === (int) $date->format('w')) {
-                $this->year < 1980 ? $date->add(new DateInterval('P1D')) : $date->sub(new DateInterval('P1D'));
+                $this->year < 1980 ? $date->add(new \DateInterval('P1D')) : $date->sub(new \DateInterval('P1D'));
             }
 
             $this->addHoliday(new Holiday(
@@ -271,13 +238,13 @@ class Netherlands extends AbstractProvider
      *
      * @throws \Exception
      */
-    private function calculateKingsday(): void
+    protected function calculateKingsday(): void
     {
         if ($this->year >= 2014) {
-            $date = new DateTime("$this->year-4-27", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+            $date = new \DateTime("{$this->year}-4-27", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
             if (0 === (int) $date->format('w')) {
-                $date->sub(new DateInterval('P1D'));
+                $date->sub(new \DateInterval('P1D'));
             }
 
             $this->addHoliday(new Holiday(
@@ -296,22 +263,77 @@ class Netherlands extends AbstractProvider
      *
      * @throws \Exception
      */
-    private function calculateCommemorationLiberationDay(): void
+    protected function calculateCommemorationLiberationDay(): void
     {
         if ($this->year >= 1947) {
             $this->addHoliday(new Holiday(
                 'commemorationDay',
                 ['en' => 'Commemoration Day', 'nl' => 'dodenherdenking'],
-                new DateTime("$this->year-5-4", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-5-4", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale,
                 Holiday::TYPE_OBSERVANCE
             ));
+            // Liberation day is only an official holiday every 5 years
+            $holidayType = 0 === $this->year % 5 ? Holiday::TYPE_OFFICIAL : Holiday::TYPE_OBSERVANCE;
             $this->addHoliday(new Holiday(
                 'liberationDay',
                 ['en' => 'Liberation Day', 'nl' => 'Bevrijdingsdag'],
-                new DateTime("$this->year-5-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-5-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale,
-                Holiday::TYPE_OFFICIAL
+                $holidayType
+            ));
+        }
+    }
+
+    /**
+     * Extra days that are added for the "Algemene termijnenwet".
+     * These extra days are in the current cases the Friday after an official holiday, but these "day after"
+     * are not official and just administrative.
+     *
+     * @see https://wetten.overheid.nl/BWBR0002448/2010-10-10/
+     * @see https://wetten.overheid.nl/BWBR0051300/2025-07-22
+     */
+    protected function addEquivalentDays(): void
+    {
+        if (2026 === $this->year) {
+            $this->addHoliday(new Holiday(
+                'dayAfterNewYearsDay',
+                [],
+                new \DateTime("{$this->year}-1-2", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                $this->locale,
+                Holiday::TYPE_OTHER
+            ));
+            $this->addHoliday(new Holiday(
+                'dayAfterAscensionDay',
+                ['en' => 'Day after Ascension Day', 'nl' => 'Dag na Hemelvaart'],
+                new \DateTime("{$this->year}-5-15", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                $this->locale,
+                Holiday::TYPE_OTHER
+            ));
+        }
+        if (2027 === $this->year) {
+            $this->addHoliday(new Holiday(
+                'dayAfterAscensionDay',
+                ['en' => 'Day after Ascension Day', 'nl' => 'Dag na Hemelvaart'],
+                new \DateTime("{$this->year}-5-7", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                $this->locale,
+                Holiday::TYPE_OTHER
+            ));
+        }
+        if (2028 === $this->year) {
+            $this->addHoliday(new Holiday(
+                'dayAfterKingsDay',
+                ['en' => 'Day after Kings Day', 'nl' => 'Dag na Koningsdag'],
+                new \DateTime("{$this->year}-4-28", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                $this->locale,
+                Holiday::TYPE_OTHER
+            ));
+            $this->addHoliday(new Holiday(
+                'dayAfterAscensionDay',
+                ['en' => 'Day after Ascension Day', 'nl' => 'Dag na Hemelvaart'],
+                new \DateTime("{$this->year}-5-26", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                $this->locale,
+                Holiday::TYPE_OTHER
             ));
         }
     }

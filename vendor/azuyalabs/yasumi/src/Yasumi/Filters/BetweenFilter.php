@@ -1,19 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Filters;
-
-use Iterator;
 
 /**
  * BetweenFilter is a class used for filtering holidays based on given date range.
@@ -22,58 +24,43 @@ use Iterator;
  * start and end date need to be included in the comparison.
  *
  * Note: this class can be used separately, however is implemented by the AbstractProvider::between method.
- *
- * @package Yasumi\Filters
  */
 class BetweenFilter extends AbstractFilter
 {
-    /**
-     * @var string start date of the time frame to check against
-     */
-    private $startDate;
+    private const DATE_FORMAT = 'Y-m-d';
+
+    /** start date of the time frame to check against. */
+    private readonly string $startDate;
+
+    /** end date of the time frame to check against */
+    private readonly string $endDate;
 
     /**
-     * @var string end date of the time frame to check against
-     */
-    private $endDate;
-
-    /**
-     * @var bool indicates whether the start and end dates should be included in the comparison
-     */
-    private $equal;
-
-    /**
-     * Construct the Between FilterIterator Object
+     * Construct the Between FilterIterator Object.
      *
-     * @param Iterator $iterator Iterator object of the Holidays Provider
-     * @param \DateTimeInterface $startDate Start date of the time frame to check against
-     * @param \DateTimeInterface $endDate End date of the time frame to check against
-     * @param bool $equal Indicate whether the start and end dates should be included in the
-     *                                       comparison
+     * @param \Iterator<string, \Yasumi\Holiday> $iterator  Iterator object of the Holidays Provider
+     * @param \DateTimeInterface                 $startDate Start date of the time frame to check against
+     * @param \DateTimeInterface                 $endDate   End date of the time frame to check against
+     * @param bool                               $equal     Indicate whether the start and end dates should be included in the
+     *                                                      comparison
      */
     public function __construct(
-        Iterator $iterator,
+        \Iterator $iterator,
         \DateTimeInterface $startDate,
         \DateTimeInterface $endDate,
-        bool $equal = true
+        private readonly bool $equal = true,
     ) {
         parent::__construct($iterator);
-        $this->equal = $equal;
-        $this->startDate = $startDate->format('Y-m-d');
-        $this->endDate = $endDate->format('Y-m-d');
+        $this->startDate = $startDate->format(self::DATE_FORMAT);
+        $this->endDate = $endDate->format(self::DATE_FORMAT);
     }
 
-    /**
-     * @return bool Check whether the current element of the iterator is acceptable
-     */
     public function accept(): bool
     {
-        $holiday = $this->getInnerIterator()->current()->format('Y-m-d');
+        $holiday = $this->getInnerIterator()->current()->format(self::DATE_FORMAT);
 
-        if ($this->equal && $holiday >= $this->startDate && $holiday <= $this->endDate) {
-            return true;
-        }
-
-        return $holiday > $this->startDate && $holiday < $this->endDate;
+        return $this->equal
+            ? $holiday >= $this->startDate && $holiday <= $this->endDate
+            : $holiday > $this->startDate && $holiday < $this->endDate;
     }
 }

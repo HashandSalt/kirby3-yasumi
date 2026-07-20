@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Austria;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Austria;
@@ -21,12 +24,12 @@ use Yasumi\Provider\Austria;
 /**
  * Provider for all holidays in Carinthia (Austria).
  *
- * @link https://en.wikipedia.org/wiki/Carinthia
+ * @see https://en.wikipedia.org/wiki/Carinthia
  */
 class Carinthia extends Austria
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'AT-2';
@@ -34,7 +37,6 @@ class Carinthia extends Austria
     /**
      * Initialize holidays for Carinthia (Austria).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -56,14 +58,13 @@ class Carinthia extends Austria
      * southern border between the Republic of Austria and the newly formed
      * Kingdom of Serbs, Croats and Slovenes (Yugoslavia) after World War I.
      *
-     * @link https://en.wikipedia.org/wiki/1920_Carinthian_plebiscite
+     * @see https://en.wikipedia.org/wiki/1920_Carinthian_plebiscite
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculatePlebisciteDay(): void
+    protected function calculatePlebisciteDay(): void
     {
         if ($this->year < 1920) {
             return;
@@ -72,7 +73,7 @@ class Carinthia extends Austria
         $this->addHoliday(new Holiday(
             'plebisciteDay',
             [],
-            new DateTime($this->year . '-10-10', new \DateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-10-10", new \DateTimeZone($this->timezone)),
             $this->locale
         ));
     }

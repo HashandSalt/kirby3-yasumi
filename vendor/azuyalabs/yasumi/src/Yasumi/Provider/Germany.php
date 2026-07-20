@@ -1,20 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -23,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Germany extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'DE';
@@ -34,7 +37,6 @@ class Germany extends AbstractProvider
     /**
      * Initialize holidays for Germany.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -53,6 +55,7 @@ class Germany extends AbstractProvider
         $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->goodFriday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->internationalWorkersDay($this->year, $this->timezone, $this->locale));
+        $this->addHoliday($this->pentecost($this->year, $this->timezone, $this->locale, Holiday::TYPE_OTHER));
         $this->addHoliday($this->pentecostMonday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->secondChristmasDay($this->year, $this->timezone, $this->locale));
 
@@ -65,6 +68,14 @@ class Germany extends AbstractProvider
         }
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Germany',
+            'https://de.wikipedia.org/wiki/Gesetzliche_Feiertage_in_Deutschland',
+        ];
+    }
+
     /**
      * German Unity Day.
      *
@@ -75,20 +86,19 @@ class Germany extends AbstractProvider
      * 3 October has been the German national holiday since 1990, when the reunification was formally completed. It
      * is a legal holiday for the Federal Republic of Germany.
      *
-     * @link https://en.wikipedia.org/wiki/German_Unity_Day
+     * @see https://en.wikipedia.org/wiki/German_Unity_Day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateGermanUnityDay(): void
+    protected function calculateGermanUnityDay(): void
     {
         if ($this->year >= 1990) {
             $this->addHoliday(new Holiday(
                 'germanUnityDay',
                 ['de' => 'Tag der Deutschen Einheit'],
-                new DateTime($this->year . '-10-3', new \DateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-10-3", new \DateTimeZone($this->timezone)),
                 $this->locale
             ));
         }

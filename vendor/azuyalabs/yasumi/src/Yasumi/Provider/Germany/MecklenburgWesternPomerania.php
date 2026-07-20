@@ -1,18 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Germany;
 
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Provider\Germany;
 
@@ -24,12 +28,12 @@ use Yasumi\Provider\Germany;
  * and Vorpommern after the Second World War, dissolved in 1952 and recreated at the time of the German reunification in
  * 1990.
  *
- * @link https://en.wikipedia.org/wiki/Mecklenburg-Vorpommern
+ * @see https://en.wikipedia.org/wiki/Mecklenburg-Vorpommern
  */
 class MecklenburgWesternPomerania extends Germany
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'DE-MV';
@@ -37,7 +41,6 @@ class MecklenburgWesternPomerania extends Germany
     /**
      * Initialize holidays for Mecklenburg-Western Pomerania (Germany).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -46,20 +49,31 @@ class MecklenburgWesternPomerania extends Germany
     {
         parent::initialize();
 
+        if ($this->year >= 2023) {
+            $this->addHoliday($this->internationalWomensDay($this->year, $this->timezone, $this->locale));
+        }
+
         // Add custom Christian holidays
         $this->calculateReformationDay();
+    }
+
+    public function getSources(): array
+    {
+        return array_merge(
+            ['https://www.ndr.de/nachrichten/mecklenburg-vorpommern/Frauentag-in-MV-Landtag-beschliesst-neuen-Feiertag,frauentag370.html'],
+            parent::getSources(),
+        );
     }
 
     /**
      * For the German state of Mecklenburg-Western Pomerania, Reformation Day was celebrated since 1517.
      * Note: In 2017 all German states will celebrate Reformation Day for its 500th anniversary.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateReformationDay(): void
+    protected function calculateReformationDay(): void
     {
         if ($this->year < 1517) {
             return;

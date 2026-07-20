@@ -1,24 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi;
 
-use FilesystemIterator;
-use InvalidArgumentException;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use ReflectionClass;
-use RuntimeException;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\InvalidYearException;
 use Yasumi\Exception\ProviderNotFoundException;
 use Yasumi\Exception\UnknownLocaleException;
@@ -29,29 +27,26 @@ use Yasumi\Provider\AbstractProvider;
  */
 class Yasumi
 {
-    /**
-     * Default locale.
-     */
     public const DEFAULT_LOCALE = 'en_US';
 
-    /**
-     * @var array list of all defined locales
-     */
-    private static $locales = [];
+    public const YEAR_LOWER_BOUND = 1000;
+
+    public const YEAR_UPPER_BOUND = 9999;
 
     /**
-     * Global translations.
-     *
-     * @var Translations
+     * @var array<string> list of all defined locales
      */
-    private static $globalTranslations;
+    private static array $locales = [];
+
+    /** Global translations */
+    private static ?Translations $globalTranslations = null;
 
     /**
-     * Provider class to be ignored (Abstract, trait, other)
+     * Provider class to be ignored (Abstract, trait, other).
      *
-     * @var array
+     * @var array<string>
      */
-    private static $ignoredProvider = [
+    private static array $ignoredProvider = [
         'AbstractProvider.php',
         'CommonHolidays.php',
         'ChristianHolidays.php',
@@ -64,39 +59,38 @@ class Yasumi
      * by this Holiday Provider. The workingDays parameter can be used how far ahead (in days) the next working day
      * must be searched for.
      *
-     * @param string $class Holiday Provider name
-     * @param \DateTimeInterface $startDate Start date, defaults to today
-     * @param int $workingDays Number of days to look ahead for the (first) next working day
+     * @param string             $class       Holiday Provider name
+     * @param \DateTimeInterface $startDate   Start date, defaults to today
+     * @param int                $workingDays Number of days to look ahead for the (first) next working day
      *
-     * @return \DateTimeInterface
-     *
-     * @throws \ReflectionException
      * @throws UnknownLocaleException
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @throws \Exception
-     * @throws InvalidDateException
      *
      * @TODO we should accept a timezone so we can accept int/string for $startDate
      */
     public static function nextWorkingDay(
         string $class,
         \DateTimeInterface $startDate,
-        int $workingDays = 1
+        int $workingDays = 1,
     ): \DateTimeInterface {
-
-        // Setup start date, if its an instance of \DateTime, clone to prevent modification to original
-        $date = $startDate instanceof \DateTime ? clone $startDate : $startDate;
-
+        $date = $startDate instanceof \DateTime ? \DateTimeImmutable::createFromMutable($startDate) : $startDate;
         $provider = null;
 
         while ($workingDays > 0) {
             $date = $date->add(new \DateInterval('P1D'));
-            if (!$provider instanceof ProviderInterface || $provider->getYear() !== (int) $date->format('Y')) {
+
+            if (! $date instanceof \DateTimeImmutable) {
+                throw new \RuntimeException('Unable to perform date interval addition');
+            }
+
+            if (! $provider instanceof ProviderInterface || $provider->getYear() !== (int) $date->format('Y')) {
                 $provider = self::create($class, (int) $date->format('Y'));
             }
+
             if ($provider->isWorkingDay($date)) {
-                $workingDays--;
+                --$workingDays;
             }
         }
 
@@ -110,60 +104,65 @@ class Yasumi
      * already with Yasumi, or your own provider by giving the name of your class in the first parameter. Your provider
      * class needs to implement the 'ProviderInterface' class.
      *
-     * @param string $class holiday provider name
-     * @param int $year year for which the country provider needs to be created. Year needs to be a valid integer
-     *                       between 1000 and 9999.
+     * @param string $class  holiday provider name
+     * @param int    $year   year for which the country provider needs to be created. Year needs to be a valid integer
+     *                       between the defined lower and upper bounds.
      * @param string $locale The locale to use. If empty we'll use the default locale (en_US)
      *
-     * @return AbstractProvider An instance of class $class is created and returned
+     * @return ProviderInterface An instance of class $class is created and returned
      *
-     * @throws RuntimeException          If no such holiday provider is found
-     * @throws InvalidYearException      if the year parameter is not between 1000 and 9999
+     * @throws \RuntimeException         If no such holiday provider is found
+     * @throws InvalidYearException      if the year parameter is not between the defined lower and upper bounds
      * @throws UnknownLocaleException    if the locale parameter is invalid
      * @throws ProviderNotFoundException if the holiday provider for the given country does not exist
-     * @throws \ReflectionException
      */
-    public static function create(string $class, int $year = 0, string $locale = self::DEFAULT_LOCALE): AbstractProvider
+    public static function create(string $class, int $year = self::YEAR_LOWER_BOUND, string $locale = self::DEFAULT_LOCALE): ProviderInterface
     {
         // Find and return holiday provider instance
-        $providerClass = \sprintf('Yasumi\Provider\%s', \str_replace('/', '\\', $class));
+        $providerClass = sprintf('Yasumi\Provider\%s', str_replace('/', '\\', $class));
 
-        if (\class_exists($class) && (new ReflectionClass($class))->implementsInterface(ProviderInterface::class)) {
+        if (class_exists($class) && (new \ReflectionClass($class))->implementsInterface(ProviderInterface::class)) {
             $providerClass = $class;
         }
 
-        if ('AbstractProvider' === $class || !\class_exists($providerClass)) {
-            throw new ProviderNotFoundException(\sprintf('Unable to find holiday provider "%s".', $class));
+        if ('AbstractProvider' === $class || ! class_exists($providerClass)) {
+            throw new ProviderNotFoundException(sprintf('Unable to find holiday provider "%s".', $class));
         }
 
         // Assert year input
-        if ($year < 1000 || $year > 9999) {
-            throw new InvalidYearException(\sprintf('Year needs to be between 1000 and 9999 (%d given).', $year));
+        if ($year < self::YEAR_LOWER_BOUND || $year > self::YEAR_UPPER_BOUND) {
+            throw new InvalidYearException(sprintf('Year needs to be between %d and %d (%d given).', self::YEAR_LOWER_BOUND, self::YEAR_UPPER_BOUND, $year));
         }
 
         // Load internal locales variable
-        if (empty(self::$locales)) {
+        if ([] === self::$locales) {
             self::$locales = self::getAvailableLocales();
         }
 
         // Load internal translations variable
-        if (null === self::$globalTranslations) {
+        if (! self::$globalTranslations instanceof Translations) {
             self::$globalTranslations = new Translations(self::$locales);
             self::$globalTranslations->loadTranslations(__DIR__ . '/data/translations');
         }
 
         // Assert locale input
-        if (!\in_array($locale, self::$locales, true)) {
-            throw new UnknownLocaleException(\sprintf('Locale "%s" is not a valid locale.', $locale));
+        if (! \in_array($locale, self::$locales, true)) {
+            throw new UnknownLocaleException(sprintf('Locale "%s" is not a valid locale.', $locale));
         }
 
-        return new $providerClass($year, $locale, self::$globalTranslations);
+        $instance = new $providerClass($year, $locale, self::$globalTranslations);
+
+        if (! $instance instanceof ProviderInterface) {
+            throw new ProviderNotFoundException(sprintf('Holiday provider "%s" does not implement ProviderInterface.', $class));
+        }
+
+        return $instance;
     }
 
     /**
      * Returns a list of available locales.
      *
-     * @return array list of available locales
+     * @return array<string> list of available locales
      */
     public static function getAvailableLocales(): array
     {
@@ -178,30 +177,27 @@ class Yasumi
      * your class in the first parameter. Your provider class needs to implement the 'ProviderInterface' class.
      *
      * @param string $isoCode ISO3166-2 Coded region, holiday provider will be searched for
-     * @param int $year year for which the country provider needs to be created. Year needs to be a valid
-     *                          integer between 1000 and 9999.
-     * @param string $locale The locale to use. If empty we'll use the default locale (en_US)
+     * @param int    $year    year for which the country provider needs to be created. Year needs to be a valid
+     *                        integer between the defined lower and upper bounds.
+     * @param string $locale  The locale to use. If empty we'll use the default locale (en_US)
      *
-     * @return AbstractProvider An instance of class $class is created and returned
+     * @return ProviderInterface An instance of class $class is created and returned
      *
-     * @throws RuntimeException          If no such holiday provider is found
-     * @throws InvalidArgumentException  if the year parameter is not between 1000 and 9999
+     * @throws \RuntimeException         If no such holiday provider is found
+     * @throws \InvalidArgumentException if the year parameter is not between the defined lower and upper bounds
      * @throws UnknownLocaleException    if the locale parameter is invalid
      * @throws ProviderNotFoundException if the holiday provider for the given ISO3166-2 code does not exist
      * @throws \ReflectionException
      */
     public static function createByISO3166_2(
         string $isoCode,
-        int $year = 0,
-        string $locale = self::DEFAULT_LOCALE
-    ): AbstractProvider {
+        int $year = self::YEAR_LOWER_BOUND,
+        string $locale = self::DEFAULT_LOCALE,
+    ): ProviderInterface {
         $availableProviders = self::getProviders();
 
-        if (false === isset($availableProviders[$isoCode])) {
-            throw new ProviderNotFoundException(\sprintf(
-                'Unable to find holiday provider by ISO3166-2 "%s".',
-                $isoCode
-            ));
+        if (! isset($availableProviders[$isoCode])) {
+            throw new ProviderNotFoundException(sprintf('Unable to find holiday provider by ISO3166-2 "%s".', $isoCode));
         }
 
         return self::create($availableProviders[$isoCode], $year, $locale);
@@ -210,7 +206,7 @@ class Yasumi
     /**
      * Returns a list of available holiday providers.
      *
-     * @return array list of available holiday providers
+     * @return array<string, string> list of available holiday providers
      *
      * @throws \ReflectionException
      */
@@ -218,34 +214,55 @@ class Yasumi
     {
         // Basic static cache
         static $providers;
-        if (!empty($providers)) {
+        if (null !== $providers && [] !== $providers) {
             return $providers;
         }
 
         $providers = [];
-        $filesIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
-            __DIR__ . DIRECTORY_SEPARATOR . 'Provider',
-            FilesystemIterator::SKIP_DOTS
-        ), RecursiveIteratorIterator::SELF_FIRST);
+        $filesIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
+            __DIR__ . \DIRECTORY_SEPARATOR . 'Provider',
+            \FilesystemIterator::SKIP_DOTS
+        ), \RecursiveIteratorIterator::SELF_FIRST);
 
+        /** @var \SplFileInfo $file */
         foreach ($filesIterator as $file) {
-            if ($file->isDir() || 'php' !== $file->getExtension() || \in_array(
+            if ($file->isDir()) {
+                continue;
+            }
+
+            if ('php' !== $file->getExtension()) {
+                continue;
+            }
+
+            if (\in_array(
                 $file->getBasename('.php'),
                 self::$ignoredProvider,
                 true
             )) {
                 continue;
             }
+            $quotedDs = preg_quote(\DIRECTORY_SEPARATOR, '');
+            $provider = preg_replace("#^.+{$quotedDs}Provider{$quotedDs}(.+)\\.php$#", '$1', $file->getPathName());
 
-            $quotedDs = \preg_quote(DIRECTORY_SEPARATOR, '');
-            $provider = \preg_replace("#^.+{$quotedDs}Provider{$quotedDs}(.+)\\.php$#", '$1', $file->getPathName());
+            if (! is_string($provider)) {
+                continue;
+            }
 
-            $class = new ReflectionClass(\sprintf('Yasumi\Provider\%s', \str_replace('/', '\\', $provider)));
+            /** @var class-string $providerClass */
+            $providerClass = sprintf('Yasumi\Provider\%s', str_replace('/', '\\', $provider));
+            $class = new \ReflectionClass($providerClass);
 
             $key = 'ID';
-            if ($class->isSubclassOf(AbstractProvider::class) && $class->hasConstant($key)) {
-                $providers[\strtoupper($class->getConstant($key))] = $provider;
+
+            if (! $class->isSubclassOf(AbstractProvider::class)) {
+                continue;
             }
+
+            if (! $class->hasConstant($key)) {
+                continue;
+            }
+
+            $providers[strtoupper((string) $class->getConstant($key))] = $provider;
         }
 
         return $providers;
@@ -258,39 +275,38 @@ class Yasumi
      * by this Holiday Provider. The workingDays parameter can be used how far back (in days) the previous working day
      * must be searched for.
      *
-     * @param string $class Holiday Provider name
-     * @param \DateTimeInterface $startDate Start date, defaults to today
-     * @param int $workingDays Number of days to look back for the (first) previous working day
+     * @param string             $class       Holiday Provider name
+     * @param \DateTimeInterface $startDate   Start date, defaults to today
+     * @param int                $workingDays Number of days to look back for the (first) previous working day
      *
-     * @return \DateTimeInterface
-     *
-     * @throws \ReflectionException
      * @throws UnknownLocaleException
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      * @throws \Exception
-     * @throws InvalidDateException
      *
      * @TODO we should accept a timezone so we can accept int/string for $startDate
      */
     public static function prevWorkingDay(
         string $class,
         \DateTimeInterface $startDate,
-        int $workingDays = 1
+        int $workingDays = 1,
     ): \DateTimeInterface {
-
-        // Setup start date, if its an instance of \DateTime, clone to prevent modification to original
-        $date = $startDate instanceof \DateTime ? clone $startDate : $startDate;
-
+        $date = $startDate instanceof \DateTime ? \DateTimeImmutable::createFromMutable($startDate) : $startDate;
         $provider = null;
 
         while ($workingDays > 0) {
             $date = $date->sub(new \DateInterval('P1D'));
-            if (!$provider instanceof ProviderInterface || $provider->getYear() !== (int) $date->format('Y')) {
+
+            if (! $date instanceof \DateTimeImmutable) {
+                throw new \RuntimeException('Unable to perform date interval subtraction');
+            }
+
+            if (! $provider instanceof ProviderInterface || $provider->getYear() !== (int) $date->format('Y')) {
                 $provider = self::create($class, (int) $date->format('Y'));
             }
+
             if ($provider->isWorkingDay($date)) {
-                $workingDays--;
+                --$workingDays;
             }
         }
 

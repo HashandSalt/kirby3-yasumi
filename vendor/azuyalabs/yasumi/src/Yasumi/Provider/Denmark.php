@@ -1,20 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
@@ -23,10 +25,11 @@ use Yasumi\Holiday;
  */
 class Denmark extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'DK';
@@ -34,7 +37,6 @@ class Denmark extends AbstractProvider
     /**
      * Initialize holidays for Denmark.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -58,23 +60,22 @@ class Denmark extends AbstractProvider
         $this->addHoliday($this->secondChristmasDay($this->year, $this->timezone, $this->locale));
         $this->calculateGreatPrayerDay();
 
+        // Add other holidays
         $this->addHoliday($this->internationalWorkersDay($this->year, $this->timezone, $this->locale, Holiday::TYPE_OBSERVANCE));
         $this->addHoliday($this->christmasEve($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->newYearsEve($this->year, $this->timezone, $this->locale, Holiday::TYPE_OBSERVANCE));
         $this->calculateConstitutionDay();
+    }
 
-        $summerTime = $this->summerTime($this->year, $this->timezone, $this->locale);
-        if ($summerTime instanceof Holiday) {
-            $this->addHoliday($summerTime);
-        }
-        $winterTime = $this->winterTime($this->year, $this->timezone, $this->locale);
-        if ($winterTime instanceof Holiday) {
-            $this->addHoliday($winterTime);
-        }
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Denmark',
+        ];
     }
 
     /**
-     * Great Prayer Day
+     * Great Prayer Day.
      *
      * Store Bededag, translated literally as Great Prayer Day or more loosely as General Prayer Day, "All Prayers" Day,
      * Great Day of Prayers or Common Prayer Day, is a Danish holiday celebrated on the 4th Friday after Easter. It is a
@@ -82,29 +83,34 @@ class Denmark extends AbstractProvider
      * Denmark in 1686 by King Christian V as a consolidation of several minor (or local) Roman Catholic holidays which
      * the Church observed that had survived the Reformation.
      *
-     * @link https://en.wikipedia.org/wiki/Store_Bededag
+     * @see https://en.wikipedia.org/wiki/Store_Bededag
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateGreatPrayerDay(): void
+    protected function calculateGreatPrayerDay(): void
     {
         $easter = $this->calculateEaster($this->year, $this->timezone)->format('Y-m-d');
 
-        if ($this->year >= 1686) {
-            $this->addHoliday(new Holiday(
-                'greatPrayerDay',
-                ['da' => 'store bededag'],
-                new DateTime("fourth friday $easter", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
-            ));
+        if ($this->year < 1686) {
+            return;
         }
+
+        if ($this->year >= 2024) {
+            return;
+        }
+
+        $this->addHoliday(new Holiday(
+            'greatPrayerDay',
+            ['da' => 'store bededag'],
+            new \DateTime("fourth friday {$easter}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            $this->locale
+        ));
     }
 
     /**
-     * Constitution Day
+     * Constitution Day.
      *
      * Denmark’s Constitution Day is June 5 and commemorates the signing of Denmark's constitution
      * on June 5 1849, when Denmark peacefully became as a constitutional monarchy.
@@ -112,20 +118,19 @@ class Denmark extends AbstractProvider
      * While not a public holiday, some companies and public offices are closed. Traditionally,
      * members of parliament gives political speeches around the country.
      *
-     * @link https://en.wikipedia.org/wiki/Constitution_Day_(Denmark)
+     * @see https://en.wikipedia.org/wiki/Constitution_Day_(Denmark)
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateConstitutionDay(): void
+    protected function calculateConstitutionDay(): void
     {
         if ($this->year >= 1849) {
             $this->addHoliday(new Holiday(
                 'constitutionDay',
                 ['da' => 'grundlovsdag'],
-                new DateTime("$this->year-6-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-6-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale,
                 Holiday::TYPE_OBSERVANCE
             ));

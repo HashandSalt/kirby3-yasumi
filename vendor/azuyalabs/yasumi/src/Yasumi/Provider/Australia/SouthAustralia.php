@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Australia;
 
-use DateInterval;
-use DateTime;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Australia;
@@ -21,17 +24,16 @@ use Yasumi\Provider\DateTimeZoneFactory;
 
 /**
  * Provider for all holidays in South Australia (Australia).
- *
  */
 class SouthAustralia extends Australia
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'AU-SA';
 
-    public $timezone = 'Australia/South';
+    public string $timezone = 'Australia/South';
 
     /**
      * Initialize holidays for South Australia (Australia).
@@ -65,30 +67,32 @@ class SouthAustralia extends Australia
      * on a date based on a certain number of days after March 21st. The date of Easter Day was defined by the Council
      * of Nicaea in AD325 as the Sunday after the first full moon which falls on or after the Spring Equinox.
      *
-     * @link https://en.wikipedia.org/wiki/Easter
+     * @see https://en.wikipedia.org/wiki/Easter
      *
-     * @param int $year the year for which Easter Saturday need to be created
-     * @param string $timezone the timezone in which Easter Saturday is celebrated
-     * @param string $locale the locale for which Easter Saturday need to be displayed in.
-     * @param string $type The type of holiday. Use the following constants: TYPE_OFFICIAL, TYPE_OBSERVANCE,
-     *                         TYPE_SEASON, TYPE_BANK or TYPE_OTHER. By default an official holiday is considered.
+     * @param int         $year     the year for which Easter Saturday need to be created
+     * @param string      $timezone the timezone in which Easter Saturday is celebrated
+     * @param string      $locale   the locale for which Easter Saturday need to be displayed in
+     * @param string|null $type     The type of holiday. Use the following constants: TYPE_OFFICIAL, TYPE_OBSERVANCE,
+     *                              TYPE_SEASON, TYPE_BANK or TYPE_OTHER. By default an official holiday is considered.
      *
-     * @return Holiday
-     *
-     * @throws UnknownLocaleException
-     * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function easterSaturday(
+    protected function easterSaturday(
         int $year,
         string $timezone,
         string $locale,
-        ?string $type = null
+        ?string $type = null,
     ): Holiday {
+        $date = $this->calculateEaster($year, $timezone)->sub(new \DateInterval('P1D'));
+
+        if (! $date instanceof \DateTime) {
+            throw new \RuntimeException(sprintf('unable to perform a date subtraction for %s:%s', self::class, 'easterSaturday'));
+        }
+
         return new Holiday(
             'easterSaturday',
             ['en' => 'Easter Saturday'],
-            $this->calculateEaster($year, $timezone)->sub(new DateInterval('P1D')),
+            $date,
             $locale,
             $type ?? Holiday::TYPE_OFFICIAL
         );
@@ -104,55 +108,55 @@ class SouthAustralia extends Australia
      * Her actual birthday is on April 21, but it's celebrated as a public holiday on the second Monday of June.
      *  (Except QLD & WA)
      *
-     * @link https://www.timeanddate.com/holidays/australia/queens-birthday
+     * @see https://www.timeanddate.com/holidays/australia/queens-birthday
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function calculateQueensBirthday(): void
+    protected function calculateQueensBirthday(): void
     {
         $this->addHoliday(new Holiday(
             'queensBirthday',
             [],
-            new DateTime('second monday of june ' . $this->year, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("second monday of june {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale,
             Holiday::TYPE_OFFICIAL
         ));
     }
 
     /**
-     * Labour Day
+     * Labour Day.
      *
      * @throws \Exception
      */
-    private function calculateLabourDay(): void
+    protected function calculateLabourDay(): void
     {
-        $date = new DateTime("first monday of october $this->year", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $date = new \DateTime("first monday of october {$this->year}", DateTimeZoneFactory::getDateTimeZone($this->timezone));
 
         $this->addHoliday(new Holiday('labourDay', ['en' => 'Labour Day'], $date, $this->locale));
     }
 
     /**
-     * Adelaide Cup Day
+     * Adelaide Cup Day.
      *
-     * @link https://en.wikipedia.org/wiki/Adelaide_Cup
+     * @see https://en.wikipedia.org/wiki/Adelaide_Cup
      *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    private function calculateAdelaideCupDay(): void
+    protected function calculateAdelaideCupDay(): void
     {
         if ($this->year >= 1973) {
-            $cupDay = 'second monday of march ' . $this->year;
+            $cupDay = "second monday of march {$this->year}";
 
             if ($this->year < 2006) {
-                $cupDay = 'third monday of may ' . $this->year;
+                $cupDay = "third monday of may {$this->year}";
             }
 
             $this->addHoliday(new Holiday(
                 'adelaideCup',
                 ['en' => 'Adelaide Cup'],
-                new DateTime($cupDay, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime($cupDay, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale,
                 Holiday::TYPE_OFFICIAL
             ));
@@ -160,13 +164,14 @@ class SouthAustralia extends Australia
     }
 
     /**
-     * Proclamation Day
+     * Proclamation Day.
      *
      * @throws \Exception
      */
-    private function calculateProclamationDay(): void
+    protected function calculateProclamationDay(): void
     {
-        $christmasDay = new DateTime("$this->year-12-25", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        $christmasDay = new \DateTime("{$this->year}-12-25", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+
         $this->addHoliday(new Holiday(
             'christmasDay',
             [],
@@ -174,9 +179,10 @@ class SouthAustralia extends Australia
             $this->locale,
             Holiday::TYPE_OFFICIAL
         ));
+
         switch ($christmasDay->format('w')) {
             case 0: // sunday
-                $christmasDay->add(new DateInterval('P1D'));
+                $christmasDay->add(new \DateInterval('P1D'));
                 $this->addHoliday(new Holiday(
                     'christmasHoliday',
                     ['en' => 'Christmas Holiday'],
@@ -184,27 +190,13 @@ class SouthAustralia extends Australia
                     $this->locale,
                     Holiday::TYPE_OFFICIAL
                 ));
-                $christmasDay->add(new DateInterval('P1D'));
-                $this->addHoliday(new Holiday(
-                    'proclamationDay',
-                    ['en' => 'Proclamation Day'],
-                    $christmasDay,
-                    $this->locale,
-                    Holiday::TYPE_OFFICIAL
-                ));
+                $christmasDay->add(new \DateInterval('P1D'));
                 break;
             case 5: // friday
-                $christmasDay->add(new DateInterval('P3D'));
-                $this->addHoliday(new Holiday(
-                    'proclamationDay',
-                    ['en' => 'Proclamation Day'],
-                    $christmasDay,
-                    $this->locale,
-                    Holiday::TYPE_OFFICIAL
-                ));
+                $christmasDay->add(new \DateInterval('P3D'));
                 break;
             case 6: // saturday
-                $christmasDay->add(new DateInterval('P2D'));
+                $christmasDay->add(new \DateInterval('P2D'));
                 $this->addHoliday(new Holiday(
                     'christmasHoliday',
                     ['en' => 'Christmas Holiday'],
@@ -212,25 +204,19 @@ class SouthAustralia extends Australia
                     $this->locale,
                     Holiday::TYPE_OFFICIAL
                 ));
-                $christmasDay->add(new DateInterval('P1D'));
-                $this->addHoliday(new Holiday(
-                    'proclamationDay',
-                    ['en' => 'Proclamation Day'],
-                    $christmasDay,
-                    $this->locale,
-                    Holiday::TYPE_OFFICIAL
-                ));
+                $christmasDay->add(new \DateInterval('P1D'));
                 break;
             default: // monday-thursday
-                $christmasDay->add(new DateInterval('P1D'));
-                $this->addHoliday(new Holiday(
-                    'proclamationDay',
-                    ['en' => 'Proclamation Day'],
-                    $christmasDay,
-                    $this->locale,
-                    Holiday::TYPE_OFFICIAL
-                ));
+                $christmasDay->add(new \DateInterval('P1D'));
                 break;
         }
+
+        $this->addHoliday(new Holiday(
+            'proclamationDay',
+            ['en' => 'Proclamation Day'],
+            $christmasDay,
+            $this->locale,
+            Holiday::TYPE_OFFICIAL
+        ));
     }
 }

@@ -1,35 +1,35 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 
 /**
  * Holidays for Portugal.
- *
- * @link    https://pt.wikipedia.org/wiki/Feriados_em_Portugal
- *
- * @package Yasumi\Provider
  */
 class Portugal extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'PT';
@@ -37,7 +37,6 @@ class Portugal extends AbstractProvider
     /**
      * Initialize holidays for Portugal.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -61,8 +60,17 @@ class Portugal extends AbstractProvider
         $this->addHoliday($this->christmasDay($this->year, $this->timezone, $this->locale));
     }
 
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Portugal',
+            'https://pt.wikipedia.org/wiki/Feriados_em_Portugal',
+            'https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2009-34546475-73982045',
+        ];
+    }
+
     /**
-     * Carnation Revolution (25th of April 1974) / Revolução dos Cravos (25 de Abril 1974)
+     * Carnation Revolution (25th of April 1974) / Revolução dos Cravos (25 de Abril 1974).
      *
      * The Carnation Revolution (Portuguese: Revolução dos Cravos), also referred to as the 25 April (Portuguese: 25 de
      * Abril), was initially a military coup in Lisbon, Portugal, on 25 April 1974 which overthrew the regime of the
@@ -75,20 +83,19 @@ class Portugal extends AbstractProvider
      * of rifles and on the uniforms of the army men. In Portugal, the 25th of April is a national holiday, known as
      * Freedom Day (Portuguese: Dia da Liberdade), to celebrate the event.
      *
-     * @link https://en.wikipedia.org/wiki/Carnation_Revolution
+     * @see https://en.wikipedia.org/wiki/Carnation_Revolution
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateCarnationRevolutionDay(): void
+    protected function calculateCarnationRevolutionDay(): void
     {
         if ($this->year >= 1974) {
             $this->addHoliday(new Holiday(
                 '25thApril',
                 ['pt' => 'Dia da Liberdade'],
-                new DateTime("$this->year-04-25", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-04-25", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale,
                 Holiday::TYPE_OFFICIAL
             ));
@@ -96,23 +103,22 @@ class Portugal extends AbstractProvider
     }
 
     /**
-     * In Portugal, between 2013 andd 2015 (inclusive) this holiday did not happen due to government deliberation.
+     * In Portugal, between 2013 and 2015 (inclusive) this holiday did not happen due to government deliberation.
      * It was restored in 2016.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateCorpusChristi(): void
+    protected function calculateCorpusChristi(): void
     {
         if ($this->year <= 2012 || $this->year >= 2016) {
-            $this->addHoliday($this->corpusChristi($this->year, $this->timezone, $this->locale));
+            $this->addHoliday($this->corpusChristi($this->year, $this->timezone, $this->locale, Holiday::TYPE_OFFICIAL));
         }
     }
 
     /**
-     * Day of Portugal, Camões and the Portuguese Communities / Dia de Portugal, de Camões e das Comunidades Portuguesas
+     * Day of Portugal, Camões and the Portuguese Communities / Dia de Portugal, de Camões e das Comunidades Portuguesas.
      *
      * The Wikipedia article mentions that this holiday changed names during the Portuguese dictatorship that ran
      * between 1933 and 1974 (ended with the Carnation Revolution). This is the name that is currently standing.
@@ -122,27 +128,26 @@ class Portugal extends AbstractProvider
      * officially observed only in Portugal, Portuguese citizens and emigrants throughout the world celebrate this
      * holiday. The date commemorates the death of national literary icon Luís de Camões on 10 June 1580.
      *
-     * @link https://en.wikipedia.org/wiki/Portugal_Day
+     * @see https://en.wikipedia.org/wiki/Portugal_Day
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculatePortugalDay(): void
+    protected function calculatePortugalDay(): void
     {
         if ($this->year <= 1932 || $this->year >= 1974) {
             $this->addHoliday(new Holiday(
                 'portugalDay',
                 ['pt' => 'Dia de Portugal'],
-                new DateTime("$this->year-06-10", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-06-10", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }
     }
 
     /**
-     * Establishment of the Portuguese Republic / Implantação da República Portuguesa
+     * Establishment of the Portuguese Republic / Implantação da República Portuguesa.
      *
      * The establishment of the Portuguese Republic was the result of a coup d'état organised by the Portuguese
      * Republican Party which, on 5 October 1910, deposed the constitutional monarchy and established a republican
@@ -156,20 +161,19 @@ class Portugal extends AbstractProvider
      *
      * The holiday was revoked in 2013 due to government deliberation. It was restored in 2016.
      *
-     * @link https://en.wikipedia.org/wiki/5_October_1910_revolution
+     * @see https://en.wikipedia.org/wiki/5_October_1910_revolution
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculatePortugueseRepublicDay(): void
+    protected function calculatePortugueseRepublicDay(): void
     {
         if (($this->year >= 1910 && $this->year <= 2012) || $this->year >= 2016) {
             $this->addHoliday(new Holiday(
                 'portugueseRepublic',
                 ['pt' => 'Implantação da República Portuguesa'],
-                new DateTime("$this->year-10-05", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-10-05", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale
             ));
         }
@@ -179,12 +183,11 @@ class Portugal extends AbstractProvider
      * In Portugal, between 2013 and 2015 (inclusive) this holiday did not happen due to government deliberation.
      * It was restored in 2016.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateAllSaintsDay(): void
+    protected function calculateAllSaintsDay(): void
     {
         if ($this->year <= 2012 || $this->year >= 2016) {
             $this->addHoliday($this->allSaintsDay($this->year, $this->timezone, $this->locale));
@@ -192,7 +195,7 @@ class Portugal extends AbstractProvider
     }
 
     /**
-     * Restoration of Independence / Reguesstauração da Independência
+     * Restoration of Independence / Reguesstauração da Independência.
      *
      * There is no Wikipedia article referencing this holiday directly so we are using the War that motivated the
      * holiday instead until we can find something better.
@@ -210,22 +213,21 @@ class Portugal extends AbstractProvider
      *
      * The holiday was revoked in 2013 due to government deliberation. It was restored in 2016.
      *
-     * @link https://pt.wikipedia.org/wiki/Restauração_da_Independência (portuguese link)
-     * @link https://pt.wikipedia.org/wiki/Guerra_da_Restauração (english link)
+     * @see https://pt.wikipedia.org/wiki/Restauração_da_Independência (portuguese link)
+     * @see https://pt.wikipedia.org/wiki/Guerra_da_Restauração (english link)
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateRestorationOfIndependenceDay(): void
+    protected function calculateRestorationOfIndependenceDay(): void
     {
         // The Wikipedia article mentions that this has been a holiday since the second of half of the XIX century.
         if (($this->year >= 1850 && $this->year <= 2012) || $this->year >= 2016) {
             $this->addHoliday(new Holiday(
                 'restorationOfIndependence',
                 ['pt' => 'Restauração da Independência'],
-                new DateTime("$this->year-12-01", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+                new \DateTime("{$this->year}-12-01", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
                 $this->locale,
                 Holiday::TYPE_OFFICIAL
             ));

@@ -1,18 +1,31 @@
 {
-  "name": "hashandsalt/kirby3-yasumi",
-  "description": "Kirby 3 - Yasumi",
-  "type": "kirby-plugin",
-  "license": "MIT",
-  "authors": [{
-    "name": "James Steel",
-    "email": "hello@hashandsalt.com"
-  }],
-
-  "require": {
-    "getkirby/composer-installer": "^1.1",
-    "azuyalabs/yasumi": "^2.3"
-  },
-  "config": {
-    "optimize-autoloader": true
-  }
+    "name": "hashandsalt/kirby3-yasumi",
+    "description": "Kirby 3 - Yasumi",
+    "type": "kirby-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Steel",
+            "email": "hello@hashandsalt.com"
+        },
+        {
+            "name": "hana+nils · Büro für Gestaltung",
+            "email": "buero@hananils.de"
+        }
+    ],
+    "require": {
+        "getkirby/composer-installer": "^1.1",
+        "azuyalabs/yasumi": "^2.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hashsandsalt\\Yasumi\\": "lib"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "getkirby/composer-installer": true
+        }
+    }
 }

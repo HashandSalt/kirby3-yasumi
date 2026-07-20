@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Spain;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\ChristianHolidays;
@@ -29,14 +32,14 @@ use Yasumi\Provider\Spain;
  * city of Madrid, which is also the national capital of Spain. It is bounded to the south and east by Castile–La Mancha
  * and to the north and west by Castile and León.
  *
- * @link https://en.wikipedia.org/wiki/Community_of_Madrid
+ * @see https://en.wikipedia.org/wiki/Community_of_Madrid
  */
 class CommunityOfMadrid extends Spain
 {
     use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'ES-MD';
@@ -44,7 +47,6 @@ class CommunityOfMadrid extends Spain
     /**
      * Initialize holidays for the Community Of Madrid (Spain).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -72,19 +74,18 @@ class CommunityOfMadrid extends Spain
      * Malasaña in memory of one of the heroines of the revolt, the teenager Manuela Malasaña, who was executed by
      * French troops in the aftermath of the revolt.
      *
-     * @link https://en.wikipedia.org/wiki/Dos_de_Mayo_Uprising
+     * @see https://en.wikipedia.org/wiki/Dos_de_Mayo_Uprising
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateDosdeMayoUprisingDay(): void
+    protected function calculateDosdeMayoUprisingDay(): void
     {
         $this->addHoliday(new Holiday(
             'dosdeMayoUprisingDay',
             ['es' => 'Fiesta de la Comunidad de Madrid'],
-            new DateTime("$this->year-5-2", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-5-2", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }

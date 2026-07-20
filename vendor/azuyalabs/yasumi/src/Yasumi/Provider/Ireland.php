@@ -1,20 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider;
 
-use DateTime;
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\SubstituteHoliday;
@@ -22,17 +24,18 @@ use Yasumi\SubstituteHoliday;
 /**
  * Provider for all holidays in Ireland.
  *
- * Note: All calculations are based on the schedule published in the Holidays (Employees) Act, 1973 and its amendments
- * thereafter.
+ * The public holidays of Ireland are defined in the Organisation of Working Time Act, 1993,
+ * or in statutory instruments issued pursuant on this act.
  *
- * @link: http://www.irishstatutebook.ie/eli/1973/act/25/schedule/1/enacted/en/html#sched1
+ * @see https://www.irishstatutebook.ie/eli/1997/act/20
  */
 class Ireland extends AbstractProvider
 {
-    use CommonHolidays, ChristianHolidays;
+    use CommonHolidays;
+    use ChristianHolidays;
 
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'IE';
@@ -40,7 +43,6 @@ class Ireland extends AbstractProvider
     /**
      * Initialize holidays for Ireland.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -51,10 +53,11 @@ class Ireland extends AbstractProvider
 
         // Add common holidays
         $this->calculateNewYearsDay();
+        $this->calculateStBrigidsDay();
 
         // Add common Christian holidays (common in Ireland)
         $this->addHoliday($this->goodFriday($this->year, $this->timezone, $this->locale, Holiday::TYPE_OBSERVANCE));
-        $this->addHoliday($this->easter($this->year, $this->timezone, $this->locale));
+        $this->addHoliday($this->easter($this->year, $this->timezone, $this->locale, Holiday::TYPE_OBSERVANCE));
         $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->pentecost($this->year, $this->timezone, $this->locale, Holiday::TYPE_OBSERVANCE));
         $this->calculatePentecostMonday();
@@ -68,10 +71,19 @@ class Ireland extends AbstractProvider
         $this->addHoliday(new Holiday(
             'augustHoliday',
             ['en' => 'August Holiday', 'ga' => 'Lá Saoire i mí Lúnasa'],
-            new DateTime("next monday $this->year-7-31", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("next monday {$this->year}-7-31", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
         $this->calculateOctoberHoliday();
+    }
+
+    public function getSources(): array
+    {
+        return [
+            'https://en.wikipedia.org/wiki/Public_holidays_in_Ireland',
+            'https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html',
+            'https://www.irishstatutebook.ie/eli/2022/si/50/made/en/html',
+        ];
     }
 
     /**
@@ -81,19 +93,14 @@ class Ireland extends AbstractProvider
      * Ireland. It became a public holiday following the Holidays (Employees) Act 1973. The public holiday was first
      * observed in 1974.
      *
-     * @link https://www.timeanddate.com/holidays/ireland/new-year-day
-     * @link http://www.irishstatutebook.ie/eli/1974/si/341
+     * @see https://www.timeanddate.com/holidays/ireland/new-year-day
+     * @see https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html
      *
-     * @TODO : Check substitution of New Years Day when it falls on a Saturday. The Holidays (Employees) Act 1973
-     *       states that New Years Day is substituted the *next* day if it does not fall on a weekday. So what if it
-     *       falls on a Saturday?
-     *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateNewYearsDay(): void
+    protected function calculateNewYearsDay(): void
     {
         if ($this->year < 1974) {
             return;
@@ -102,8 +109,8 @@ class Ireland extends AbstractProvider
         $holiday = $this->newYearsDay($this->year, $this->timezone, $this->locale);
         $this->addHoliday($holiday);
 
-        // Substitute holiday is on the next available weekday if a holiday falls on a Sunday.
-        if (0 === (int) $holiday->format('w')) {
+        // Substitute holiday is on the next available weekday if a holiday falls on a weekend.
+        if (\in_array((int) $holiday->format('w'), [0, 6], true)) {
             $date = clone $holiday;
             $date->modify('next monday');
 
@@ -117,19 +124,46 @@ class Ireland extends AbstractProvider
     }
 
     /**
+     * Saint Brigid's Day.
+     *
+     * Saint Brigid's Day, also known as Imbolc, is a Gaelic traditional festival. It became an official public
+     * holiday in 2023.
+     *
+     * @see https://www.irishstatutebook.ie/eli/2022/si/50/made/en/html
+     * @see https://en.wikipedia.org/wiki/Imbolc
+     */
+    protected function calculateStBrigidsDay(): void
+    {
+        if ($this->year < 2023) {
+            return;
+        }
+
+        $dateTime = new \DateTime("{$this->year}-02-01", DateTimeZoneFactory::getDateTimeZone($this->timezone));
+        if (5 !== (int) $dateTime->format('w')) {
+            $dateTime->modify('next monday');
+        }
+
+        $this->addHoliday(new Holiday(
+            'stBrigidsDay',
+            ['en' => 'Saint Brigid’s Day', 'ga' => 'Lá Fhéile Bríde'],
+            $dateTime,
+            $this->locale
+        ));
+    }
+
+    /**
      * Pentecost Monday.
      *
      * Whitmonday (Pentecost Monday) was considered a public holiday in Ireland until 1973.
      *
-     * @link http://www.irishstatutebook.ie/eli/1939/act/1/section/8/enacted/en/html
-     * @link http://www.irishstatutebook.ie/eli/1973/act/25/schedule/1/enacted/en/html#sched1
+     * @see https://www.irishstatutebook.ie/eli/1939/act/1/section/8/enacted/en/html
+     * @see https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculatePentecostMonday(): void
+    protected function calculatePentecostMonday(): void
     {
         if ($this->year > 1973) {
             return;
@@ -144,20 +178,18 @@ class Ireland extends AbstractProvider
      * Most people in Ireland start Christmas celebrations on Christmas Eve (Oíche Nollag), including taking time
      * off work.
      *
-     * @link http://www.irishstatutebook.ie/eli/1973/act/25/schedule/1/enacted/en/html#sched1
+     * @see https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateChristmasDay(): void
+    protected function calculateChristmasDay(): void
     {
         $holiday = new Holiday(
             'christmasDay',
             ['en' => 'Christmas Day', 'ga' => 'Lá Nollag'],
-            new DateTime($this->year . '-12-25', DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-12-25", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         );
 
@@ -182,22 +214,20 @@ class Ireland extends AbstractProvider
      *
      * The day after Christmas celebrating the feast day of Saint Stephen.
      *
-     * @link http://www.irishstatutebook.ie/eli/1973/act/25/schedule/1/enacted/en/html#sched1
-     * @link https://en.wikipedia.org/wiki/St._Stephen%27s_Day
+     * @see https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html
+     * @see https://en.wikipedia.org/wiki/St._Stephen%27s_Day
      * @see  ChristianHolidays
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateStStephensDay(): void
+    protected function calculateStStephensDay(): void
     {
         $holiday = new Holiday(
             'stStephensDay',
             [],
-            new DateTime($this->year . '-12-26', DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-12-26", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         );
 
@@ -226,15 +256,14 @@ class Ireland extends AbstractProvider
      * of Ireland, Northern Ireland, the Canadian province of Newfoundland and Labrador, and the British Overseas
      * Territory of Montserrat.
      *
-     * @link https://en.wikipedia.org/wiki/Saint_Patrick%27s_Day
+     * @see https://en.wikipedia.org/wiki/Saint_Patrick%27s_Day
+     * @see https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateStPatricksDay(): void
+    protected function calculateStPatricksDay(): void
     {
         if ($this->year < 1903) {
             return;
@@ -242,7 +271,7 @@ class Ireland extends AbstractProvider
         $holiday = new Holiday(
             'stPatricksDay',
             ['en' => 'St. Patrick’s Day', 'ga' => 'Lá Fhéile Pádraig'],
-            new DateTime($this->year . '-3-17', DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("{$this->year}-3-17", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         );
 
@@ -271,15 +300,14 @@ class Ireland extends AbstractProvider
      * longer widely observed, though the practice still persists in some places across the country. Limerick, Clare
      * and many other people in other counties still keep on this tradition.
      *
-     * @link https://en.wikipedia.org/wiki/May_Day
+     * @see https://en.wikipedia.org/wiki/May_Day
+     * @see https://www.irishstatutebook.ie/eli/1993/si/91/made/en/html
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateMayDay(): void
+    protected function calculateMayDay(): void
     {
         if ($this->year < 1994) {
             return;
@@ -288,7 +316,7 @@ class Ireland extends AbstractProvider
         $this->addHoliday(new Holiday(
             'mayDay',
             ['en' => 'May Day', 'ga' => 'Lá Bealtaine'],
-            new DateTime("next monday $this->year-4-30", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("next monday {$this->year}-4-30", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }
@@ -299,15 +327,13 @@ class Ireland extends AbstractProvider
      * The first Monday in June is considered a public holiday since 1974. Previously observed as Whit Monday until
      * 1973.
      *
-     * @link http://www.irishstatutebook.ie/eli/1961/act/33/section/8/enacted/en/html
+     * @see http://www.irishstatutebook.ie/eli/1961/act/33/section/8/enacted/en/html
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateJuneHoliday(): void
+    protected function calculateJuneHoliday(): void
     {
         if ($this->year < 1974) {
             return;
@@ -316,7 +342,7 @@ class Ireland extends AbstractProvider
         $this->addHoliday(new Holiday(
             'juneHoliday',
             ['en' => 'June Holiday', 'ga' => 'Lá Saoire i mí an Mheithimh'],
-            new DateTime("next monday $this->year-5-31", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("next monday {$this->year}-5-31", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }
@@ -326,15 +352,14 @@ class Ireland extends AbstractProvider
      *
      * The last Monday in October is considered a public holiday since 1977.
      *
-     * @link http://www.irishstatutebook.ie/eli/1973/act/25/schedule/1/enacted/en/html#sched1
+     * @see https://www.irishstatutebook.ie/eli/1977/si/193/made/en/html
+     * @see https://www.irishstatutebook.ie/eli/1997/act/20/schedule/2/enacted/en/html
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
-     * @throws \Exception
      */
-    private function calculateOctoberHoliday(): void
+    protected function calculateOctoberHoliday(): void
     {
         if ($this->year < 1977) {
             return;
@@ -343,7 +368,7 @@ class Ireland extends AbstractProvider
         $this->addHoliday(new Holiday(
             'octoberHoliday',
             ['en' => 'October Holiday', 'ga' => 'Lá Saoire i mí Dheireadh Fómhair'],
-            new DateTime("previous monday $this->year-11-01", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            new \DateTime("previous monday {$this->year}-11-01", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
             $this->locale
         ));
     }

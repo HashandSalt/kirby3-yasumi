@@ -1,19 +1,24 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
 
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 // Translations for New Year's Day
 return [
     'bs_Latn' => 'Nova godina',
+    'bg' => 'Нова година',
     'ca' => 'Cap d’any',
     'cs' => 'Nový rok',
     'cy' => 'Dydd Calan',
@@ -24,14 +29,15 @@ return [
     'es' => 'Año Nuevo',
     'et' => 'Uusaasta',
     'fi' => 'Uudenvuodenpäivä',
+    'fr' => 'Jour de l’An',
     'fr_BE' => 'Nouvel An',
     'fr_CH' => 'Nouvel An',
-    'fr' => 'Jour de l’An',
     'ga' => 'Lá Caille',
     'hr' => 'Nova godina',
     'hu' => 'Újév',
     'it' => 'Capodanno',
     'ja' => '元日',
+    'ka' => 'ახალი წელი',
     'ko' => '새해',
     'lt' => 'Naujųjų metų diena',
     'lv' => 'Jaunais Gads',
@@ -43,6 +49,8 @@ return [
     'ro' => 'Anul Nou',
     'ru' => 'Новый год',
     'sk' => 'Nový rok',
+    'sl' => 'Novo leto',
     'sv' => 'nyårsdagen',
+    'tr' => 'Yılbaşı',
     'uk' => 'Новий Рік',
 ];

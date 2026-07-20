@@ -1,18 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types = 1);
+
 /**
- * This file is part of the Yasumi package.
+ * This file is part of the 'Yasumi' package.
  *
- * Copyright (c) 2015 - 2020 AzuyaLabs
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @author Sacha Telgenhof <me@sachatelgenhof.com>
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
 namespace Yasumi\Provider\Germany;
 
-use Yasumi\Exception\InvalidDateException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Holiday;
 use Yasumi\Provider\Germany;
@@ -25,12 +29,12 @@ use Yasumi\Provider\Germany;
  * population is over 1.7 million people, and the Hamburg Metropolitan Region (including parts of the neighbouring
  * Federal States of Lower Saxony and Schleswig-Holstein) has more than 5 million inhabitants.
  *
- * @link https://en.wikipedia.org/wiki/Hamburg
+ * @see https://en.wikipedia.org/wiki/Hamburg
  */
 class Hamburg extends Germany
 {
     /**
-     * Code to identify this Holiday Provider. Typically this is the ISO3166 code corresponding to the respective
+     * Code to identify this Holiday Provider. Typically, this is the ISO3166 code corresponding to the respective
      * country or sub-region.
      */
     public const ID = 'DE-HH';
@@ -38,7 +42,6 @@ class Hamburg extends Germany
     /**
      * Initialize holidays for Schleswig-Holstein (Germany).
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
@@ -52,14 +55,13 @@ class Hamburg extends Germany
 
     /**
      * Since 2018 Hamburg celebrates the "Day of Reformation".
-     * It is not called "Reformation Day" like other states to prevent church-based associations
+     * It is not called "Reformation Day" like other states to prevent church-based associations.
      *
-     * @throws InvalidDateException
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
      * @throws \Exception
      */
-    private function calculateDayOfReformation(): void
+    protected function calculateDayOfReformation(): void
     {
         if ($this->year < 2018) {
             return;

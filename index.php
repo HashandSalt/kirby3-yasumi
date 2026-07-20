@@ -1,39 +1,120 @@
 <?php
 
-@include_once __DIR__ . '/vendor/autoload.php';
+use Hashsandsalt\Yasumi\Holidays;
+use Kirby\Cms\App as Kirby;
+use Kirby\Toolkit\Str;
+use Yasumi\Yasumi;
+
+require_once __DIR__ . '/vendor/autoload.php';
 
 Kirby::plugin('hashsandsalt/yasumi', [
-
     'siteMethods' => [
-        'holidays' => function ($country, $year, $locale = 'en_US') {
-            $holidays = Yasumi\Yasumi::create($country, $year, $locale);
-            return $holidays;
-        }
-    ],
-
-    'collections' => [
-        'holidays' => function ($site) {
-            $country = option('hashandsalt.yasumi.country', 'UnitedKingdom');
-            $year = option('hashandsalt.yasumi.year', date('Y'));
-            $locale = option('hashandsalt.yasumi.locale', 'en_GB');
-
-            foreach ($site->holidays($country, $year, $locale) as $holiday) {
-                $date = new DateTime($holiday);
-
-                $pages[] = [
-                    'slug' => $holiday->shortName,
-                    'num' => $date->format('Ymd'),
-                    'template' => 'yasumi',
-                    'content' => [
-                        'title' => $holiday->getName(),
-                        'date' => $date->format('Y-m-d'),
-                        'type' => $holiday->getType()
-                    ]
-                ];
+        /**
+         * Gets Yasumi object for the provided context.
+         */
+        'yasumi' => function (
+            ?string $country = null,
+            ?int $year = null,
+            ?string $locale = null
+        ) {
+            // Determine current locale.
+            // This equals the current language displayed by Kirby.
+            if ($locale === null) {
+                $defaultLocale = Locale::getDefault();
+                $primary = Locale::getPrimaryLanguage($defaultLocale);
+                $region = Locale::getRegion($defaultLocale);
+                $locale = $primary . '_' . $region;
             }
 
-            return Pages::factory($pages);
-        }
-    ]
+            // Determine country context
+            $country =
+                $country ??
+                Str::replace(Locale::getDisplayRegion($locale, 'en'), ' ', '');
 
+            // Convert to country abbreviations used by Yasumi
+            $country = match ($country) {
+                'UnitedStates', '' => 'USA',
+                default => $country
+            };
+
+            // Determine year
+            $year = $year ?? date('Y');
+
+            return Yasumi::create($country, $year, $locale);
+        },
+        /**
+         * Create individual Holidays collection with context options.
+         * If your context does not change across templates, use the global
+         * Holidays collection that can be customized via the configuration.
+         */
+        'holidays' => function (
+            ?string $country = null,
+            ?int $year = null,
+            ?string $locale = null
+        ) {
+            // Get Yasumi holiday data
+            $yasumi = $this->yasumi($country, $year, $locale);
+
+            // Create Holidays collection
+            return new Holidays($yasumi);
+        }
+    ],
+    'collections' => [
+        /**
+         * Global Holidays collection you can customize via the configuration.
+         * If you need individual collection contexts, use the holiday site method.
+         */
+        'holidays' => function ($site): Holidays {
+            $country = option('hashandsalt.yasumi.country');
+            $year = option('hashandsalt.yasumi.year');
+            $locale = option('hashandsalt.yasumi.locale');
+            $yasumi = $site->yasumi($country, $year, $locale);
+
+            return new Holidays($yasumi);
+        }
+    ],
+    'sections' => [
+        /**
+         * Holiday panel section.
+         */
+        'holidays' => [
+            'props' => [
+                'label' => function (string $label = 'Holidays') {
+                    return $label;
+                },
+                'country' => function (?string $country = null) {
+                    return $country;
+                },
+                'year' => function (?int $year = null) {
+                    return $year;
+                }
+            ],
+            'computed' => [
+                'holidays' => function () {
+                    // Get Yasumi holiday data
+                    $yasumi = site()->yasumi($this->country(), $this->year());
+
+                    // Create Holidays collection
+                    $holidays = new Holidays($yasumi);
+
+                    // Create collection items
+                    $items = [];
+                    foreach ($holidays as $holiday) {
+                        $items[] = [
+                            'text' => $holiday->title(),
+                            'info' => IntlDateFormatter::formatObject(
+                                new DateTime($holiday->date()->value()),
+                                [
+                                    IntlDateFormatter::MEDIUM,
+                                    IntlDateFormatter::NONE
+                                ]
+                            )
+                        ];
+                    }
+
+                    return $items;
+                }
+            ]
+        ]
+    ]
 ]);
