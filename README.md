@@ -4,9 +4,6 @@ Get a list of official public holidays and the dates they fall on for any countr
 
 ## Installation
 
-### Manual
-
-To use this plugin, place all the files in `site/plugins/kirby3-yasumi`.
 
 ### Git submodule
 
